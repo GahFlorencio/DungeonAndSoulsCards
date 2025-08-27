@@ -59,58 +59,45 @@
             </div>
         </aside>
 
-        <!-- Área principal do jogo -->
+        <!-- Área principal do jogo (Canvas) -->
         <main class="game-main">
-            <!-- Cartas do Oponente -->
-            <div class="opponent-area" id="opponentArea">
-                <!-- Cartas serão inseridas aqui dinamicamente -->
-            </div>
-
-            <!-- Área Central de Batalha -->
-            <div class="battle-area" id="battleArea">
-                <div class="battle-card-slot" id="playerBattleSlot"></div>
-                <div class="vs-indicator">⚔️ VS ⚔️</div>
-                <div class="battle-card-slot" id="opponentBattleSlot"></div>
-            </div>
-
-            <!-- Cartas do Jogador -->
-            <div class="player-area" id="playerArea">
-                <!-- Cartas serão inseridas aqui dinamicamente -->
-            </div>
-
-            <!-- Roda de ações para seleção de atributos -->
-            <div id="actionWheel" class="action-wheel hidden">
-                <div class="wheel-center">
-                    <span class="wheel-title">Escolha o Atributo</span>
+            <div class="canvas-container">
+                <canvas id="gameCanvas" class="game-canvas"></canvas>
+                
+                <!-- Roda de ações para seleção de atributos -->
+                <div id="actionWheel" class="action-wheel hidden">
+                    <div class="wheel-center">
+                        <span class="wheel-title">Escolha o Atributo</span>
+                    </div>
+                    <button class="wheel-option" data-attribute="forca">
+                        <span class="attribute-icon">💪</span>
+                        <span class="attribute-name">Força</span>
+                    </button>
+                    <button class="wheel-option" data-attribute="destreza">
+                        <span class="attribute-icon">🏹</span>
+                        <span class="attribute-name">Destreza</span>
+                    </button>
+                    <button class="wheel-option" data-attribute="constituicao">
+                        <span class="attribute-icon">🛡️</span>
+                        <span class="attribute-name">Constituição</span>
+                    </button>
+                    <button class="wheel-option" data-attribute="inteligencia">
+                        <span class="attribute-icon">📚</span>
+                        <span class="attribute-name">Inteligência</span>
+                    </button>
                 </div>
-                <button class="wheel-option" data-attribute="forca">
-                    <span class="attribute-icon">💪</span>
-                    <span class="attribute-name">Força</span>
-                </button>
-                <button class="wheel-option" data-attribute="destreza">
-                    <span class="attribute-icon">🏹</span>
-                    <span class="attribute-name">Destreza</span>
-                </button>
-                <button class="wheel-option" data-attribute="constituicao">
-                    <span class="attribute-icon">🛡️</span>
-                    <span class="attribute-name">Constituição</span>
-                </button>
-                <button class="wheel-option" data-attribute="inteligencia">
-                    <span class="attribute-icon">📚</span>
-                    <span class="attribute-name">Inteligência</span>
-                </button>
-            </div>
 
-            <!-- Botão de batalha -->
-            <button id="battleButton" class="battle-btn hidden">⚔️ INICIAR BATALHA ⚔️</button>
+                <!-- Botão de batalha -->
+                <button id="battleButton" class="battle-btn hidden">⚔️ INICIAR BATALHA ⚔️</button>
 
-            <!-- Área de animação dos dados -->
-            <div id="diceAnimation" class="dice-animation hidden">
-                <div class="dice-container">
-                    <div class="dice" id="dice1">🎲</div>
-                    <div class="dice" id="dice2">🎲</div>
+                <!-- Área de animação dos dados -->
+                <div id="diceAnimation" class="dice-animation hidden">
+                    <div class="dice-container">
+                        <div class="dice" id="dice1">🎲</div>
+                        <div class="dice" id="dice2">🎲</div>
+                    </div>
+                    <div class="dice-result" id="diceResult">Rolando dados...</div>
                 </div>
-                <div class="dice-result" id="diceResult">Rolando dados...</div>
             </div>
         </main>
     </div>

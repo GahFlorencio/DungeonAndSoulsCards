@@ -1,0 +1,1003 @@
+/**
+ * Renderiza cartas no canvas
+ */
+class CardRenderer {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.setupCanvas();
+    }
+
+    setupCanvas() {
+        // Canvas maior para melhor visualização
+        this.canvas.width = 1200;
+        this.canvas.height = 800;
+        
+        // Remove o ajuste responsivo que estava causando problemas
+        // this.adjustCanvasSize();
+        
+        // Adiciona event listener para cliques nas cartas
+        this.canvas.addEventListener('click', (event) => {
+            this.handleCardClick(event);
+        });
+        
+        // Adiciona hover para mostrar cursor pointer sobre cartas
+        this.canvas.addEventListener('mousemove', (event) => {
+            this.handleCardHover(event);
+        });
+    }
+
+    /**
+     * Ajusta o tamanho do canvas responsivamente
+     */
+    adjustCanvasSize() {
+        const container = this.canvas.parentElement;
+        if (container) {
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            
+            // Define o tamanho máximo baseado no container
+            const maxWidth = Math.min(containerWidth - 20, 1000);
+            const maxHeight = Math.min(containerHeight - 20, 700);
+            
+            // Mantém a proporção
+            const aspectRatio = 1000 / 700; // Proporção desejada
+            
+            let newWidth, newHeight;
+            if (maxWidth / maxHeight > aspectRatio) {
+                newHeight = maxHeight;
+                newWidth = newHeight * aspectRatio;
+            } else {
+                newWidth = maxWidth;
+                newHeight = newWidth / aspectRatio;
+            }
+            
+            // Atualiza o estilo do canvas (visual)
+            this.canvas.style.width = newWidth + 'px';
+            this.canvas.style.height = newHeight + 'px';
+            
+            // Mantém a resolução interna do canvas
+            this.canvas.width = 1000;
+            this.canvas.height = 700;
+        }
+    }
+
+    /**
+     * Manipula hover sobre cartas para mostrar cursor pointer
+     */
+    handleCardHover(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        
+        const cardWidth = 180;  // Novo tamanho
+        const cardHeight = 260; // Novo tamanho
+        let isOverCard = false;
+        
+        // Verifica se está sobre carta do jogador (nova posição centralizada)
+        const playerCards = this.currentGameState ? this.currentGameState.maoJogador : [];
+        if (playerCards.length > 0) {
+            const spacing = 20;
+            const totalWidth = (cardWidth * playerCards.length) + (spacing * (playerCards.length - 1));
+            const startX = (this.canvas.width - totalWidth) / 2;
+            const playerCardsY = this.canvas.height - cardHeight - 50;
+            
+            if (y >= playerCardsY && y <= playerCardsY + cardHeight) {
+                for (let i = 0; i < playerCards.length; i++) {
+                    const cardX = startX + (i * (cardWidth + spacing));
+                    if (x >= cardX && x <= cardX + cardWidth) {
+                        isOverCard = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Verifica se está sobre carta do oponente
+        const opponentCards = this.currentGameState ? this.currentGameState.maoOponente : [];
+        if (opponentCards.length > 0 && !isOverCard) {
+            const opponentCardsY = 40;
+            if (y >= opponentCardsY && y <= opponentCardsY + cardHeight) {
+                for (let i = 0; i < opponentCards.length; i++) {
+                    const cardX = 50 + i * (cardWidth + 20);
+                    if (x >= cardX && x <= cardX + cardWidth) {
+                        isOverCard = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        this.canvas.style.cursor = isOverCard ? 'pointer' : 'default';
+    }
+
+    /**
+     * Renderiza terreno e equipamentos selecionados no tabuleiro
+     */
+    renderSelectedTerrainAndEquipment(gameState) {
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        
+        // Renderiza terreno selecionado
+        if (gameState.terrenoJogador) {
+            this.renderTerrainCard(gameState.terrenoJogador, centerX - 180, centerY - 60, 100, 120);
+        }
+        
+        // Renderiza equipamentos selecionados
+        if (gameState.equipamentosJogador && gameState.equipamentosJogador.length > 0) {
+            gameState.equipamentosJogador.forEach((equip, index) => {
+                const offsetX = (index - 0.5) * 110; // Centraliza os equipamentos
+                this.renderEquipmentCard(equip, centerX + offsetX, centerY - 60, 100, 120);
+            });
+        }
+    }
+
+    /**
+     * Renderiza uma carta de terreno com estilo moderno
+     */
+    renderTerrainCard(terreno, x, y, width, height) {
+        // Carrega imagem do terreno
+        const img = new Image();
+        img.src = `assets/images/terrains/${terreno.id}/1.png`;
+        
+        // Frame da carta
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        this.ctx.fillRect(x, y, width, height);
+        
+        // Borda dourada
+        this.ctx.strokeStyle = '#d4af37';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(x, y, width, height);
+        
+        img.onload = () => {
+            // Desenha a imagem de fundo
+            this.ctx.drawImage(img, x, y, width, height);
+            
+            // Overlay escuro para texto
+            const gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0.1)');
+            gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.3)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(x, y, width, height);
+            
+            // Nome do terreno
+            this.ctx.fillStyle = '#d4af37';
+            this.ctx.font = 'bold 12px Cinzel';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(terreno.nome, x + width/2, y + height - 10);
+            
+            // Borda final
+            this.ctx.strokeStyle = '#d4af37';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(x, y, width, height);
+        };
+        
+        img.onerror = () => {
+            // Fallback se imagem não carregar
+            this.ctx.fillStyle = '#4a5568';
+            this.ctx.fillRect(x, y, width, height);
+            
+            this.ctx.fillStyle = '#d4af37';
+            this.ctx.font = 'bold 12px Cinzel';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(terreno.nome, x + width/2, y + height/2);
+            
+            this.ctx.strokeStyle = '#d4af37';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(x, y, width, height);
+        };
+    }
+
+    /**
+     * Renderiza uma carta de equipamento com estilo moderno
+     */
+    renderEquipmentCard(equipamento, x, y, width, height) {
+        // Carrega imagem do equipamento
+        const img = new Image();
+        img.src = `assets/images/equipments/${equipamento.id}/1.png`;
+        
+        // Frame da carta
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        this.ctx.fillRect(x, y, width, height);
+        
+        // Borda dourada
+        this.ctx.strokeStyle = '#d4af37';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(x, y, width, height);
+        
+        img.onload = () => {
+            // Desenha a imagem de fundo
+            this.ctx.drawImage(img, x, y, width, height);
+            
+            // Overlay escuro para texto
+            const gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0.1)');
+            gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.3)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(x, y, width, height);
+            
+            // Nome do equipamento
+            this.ctx.fillStyle = '#d4af37';
+            this.ctx.font = 'bold 10px Cinzel';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(equipamento.nome, x + width/2, y + height - 10);
+            
+            // Borda final
+            this.ctx.strokeStyle = '#d4af37';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(x, y, width, height);
+        };
+        
+        img.onerror = () => {
+            // Fallback se imagem não carregar
+            this.ctx.fillStyle = '#4a5568';
+            this.ctx.fillRect(x, y, width, height);
+            
+            this.ctx.fillStyle = '#d4af37';
+            this.ctx.font = 'bold 10px Cinzel';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(equipamento.nome, x + width/2, y + height/2);
+            
+            this.ctx.strokeStyle = '#d4af37';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(x, y, width, height);
+        };
+    }
+
+    /**
+     * Manipula cliques nas cartas para seleção e ações
+     */
+    handleCardClick(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        
+        // Usa as novas dimensões das cartas
+        const cardWidth = 180;  // Novo tamanho
+        const cardHeight = 260; // Novo tamanho
+        
+        // Verifica clique nas cartas do jogador (nova posição centralizada)
+        const playerCards = this.currentGameState ? this.currentGameState.maoJogador : [];
+        if (playerCards.length > 0) {
+            const spacing = 20;
+            const totalWidth = (cardWidth * playerCards.length) + (spacing * (playerCards.length - 1));
+            const startX = (this.canvas.width - totalWidth) / 2;
+            const playerCardsY = this.canvas.height - cardHeight - 50;
+            
+            if (y >= playerCardsY && y <= playerCardsY + cardHeight) {
+                for (let i = 0; i < playerCards.length; i++) {
+                    const cardX = startX + (i * (cardWidth + spacing));
+                    if (x >= cardX && x <= cardX + cardWidth) {
+                        // Clicou na carta do jogador índice i
+                        this.handlePlayerCardClick(i, event);
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // Verifica clique nas cartas do oponente
+        const opponentCards = this.currentGameState ? this.currentGameState.maoOponente : [];
+        if (opponentCards.length > 0) {
+            const opponentCardsY = 40;
+            if (y >= opponentCardsY && y <= opponentCardsY + cardHeight) {
+                for (let i = 0; i < opponentCards.length; i++) {
+                    const cardX = 50 + i * (cardWidth + 20);
+                    if (x >= cardX && x <= cardX + cardWidth) {
+                        // Clicou na carta do oponente índice i
+                        if (window.gameManager) {
+                            window.gameManager.flipOpponentCard(i);
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Manipula clique em carta do jogador (seleção + roda de ações)
+     */
+    handlePlayerCardClick(cardIndex, event) {
+        if (!window.gameManager || !this.currentGameState) return;
+        
+        const carta = this.currentGameState.maoJogador[cardIndex];
+        if (!carta) return;
+        
+        // Se já há uma carta selecionada e é a mesma, deseleciona
+        if (window.gameManager.selectedPlayerCard === cardIndex) {
+            window.gameManager.selectedPlayerCard = null;
+            this.hideActionWheel();
+        } else {
+            // Seleciona a nova carta
+            window.gameManager.selectedPlayerCard = cardIndex;
+            this.showActionWheel();
+        }
+        
+        // Re-renderiza para mostrar a seleção visual
+        if (window.cardRenderer && this.currentGameState) {
+            window.cardRenderer.render(this.currentGameState);
+        }
+    }
+
+    /**
+     * Mostra a roda de ações para seleção de atributos
+     */
+    showActionWheel() {
+        const actionWheel = document.getElementById('actionWheel');
+        if (actionWheel) {
+            actionWheel.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * Esconde a roda de ações
+     */
+    hideActionWheel() {
+        const actionWheel = document.getElementById('actionWheel');
+        if (actionWheel) {
+            actionWheel.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Renderiza todas as cartas na tela
+     */
+    render(gameState) {
+        this.clearCanvas();
+        
+        // Armazena referência ao gameState para uso em outros métodos
+        this.currentGameState = gameState;
+        
+        // Renderiza todas as cartas lado a lado
+        this.renderAllCards(gameState);
+        this.renderRoundResult(gameState);
+
+        // Se há cartas sendo jogadas, renderiza elas no centro
+        if (gameState.cartaJogadorRodada || gameState.cartaOponenteRodada) {
+            this.renderBattleArea(gameState);
+        }
+    }
+
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * Renderiza cartas do jogador
+     */
+    renderPlayerCards(cartas, gameState = null) {
+        const cardWidth = 180;  // Aumentado para melhor visibilidade
+        const cardHeight = 260; // Aumentado para melhor visibilidade
+        const spacing = 20;     // Espaçamento entre as cartas
+        
+        // Calcula posição inicial para centralizar as cartas
+        const totalWidth = (cardWidth * cartas.length) + (spacing * (cartas.length - 1));
+        const startX = (this.canvas.width - totalWidth) / 2;
+        const y = this.canvas.height - cardHeight - 50; // Mais margem inferior
+        
+        cartas.forEach((carta, index) => {
+            const x = startX + (index * (cardWidth + spacing));
+            
+            // Verifica se esta carta deve estar virada para baixo
+            let showBack = false;
+            if (gameState) {
+                showBack = gameState.modoCartasOcultas || 
+                          gameState.cartasJogadorViradas.includes(index);
+            }
+            
+            this.renderCard(carta, x, y, cardWidth, cardHeight, showBack, 'hero');
+        });
+    }
+
+    /**
+     * Renderiza cartas do oponente
+     */
+    renderOpponentCards(cartas, gameState = null) {
+        const cardWidth = 180;  // Aumentado para melhor visibilidade
+        const cardHeight = 260; // Aumentado para melhor visibilidade
+        const spacing = 20;
+        
+        cartas.forEach((carta, index) => {
+            const x = 50 + (index * (cardWidth + spacing)); // Mais margem lateral
+            const y = 40; // Mais margem superior
+            
+            // Verifica se esta carta deve estar virada para baixo
+            let showBack = true; // Oponente normalmente tem cartas viradas
+            if (gameState && gameState.cartasOponenteViradas.includes(index)) {
+                showBack = true;
+            } else if (gameState && !gameState.modoCartasOcultas) {
+                // Se não estiver no modo oculto, pode mostrar algumas cartas do oponente
+                showBack = !gameState.cartasOponenteViradas.includes(-index - 1);
+            }
+            
+            this.renderCard(carta, x, y, cardWidth, cardHeight, showBack);
+        });
+    }
+
+    /**
+     * Renderiza uma carta individual (herói, equipamento ou terreno)
+     */
+    renderCard(carta, x, y, width = 120, height = 180, showBack = false, cardType = 'hero') {
+        // Se for verso da carta, renderiza um padrão genérico
+        if (showBack) {
+            this.renderCardBack(x, y, width, height);
+            return;
+        }
+
+        // Define o caminho da imagem baseado no tipo de carta
+        let imagePath = '';
+        if (cardType === 'hero') {
+            const variant = Math.floor(Math.random() * 3) + 1;
+            imagePath = `assets/images/heros/${carta.id}/${variant}.png`;
+        } else if (cardType === 'equipment') {
+            imagePath = `assets/images/equipments/${carta.id}/1.png`;
+        } else if (cardType === 'terrain') {
+            imagePath = `assets/images/terrains/${carta.id}/1.png`;
+        }
+
+        // Aplica estilo moderno similar ao de equipamento/terreno
+        this.renderModernCard(carta, x, y, width, height, imagePath, cardType);
+    }
+
+    /**
+     * Renderiza carta com estilo moderno (usado para todas as cartas)
+     */
+    renderModernCard(carta, x, y, width, height, imagePath, cardType) {
+        const img = new Image();
+        img.src = imagePath;
+
+        // Frame inicial da carta
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        this.ctx.fillRect(x, y, width, height);
+        
+        // Borda inicial
+        const isSelected = this.isCardSelected(carta, cardType);
+        this.ctx.strokeStyle = isSelected ? '#fcd34d' : '#d4af37';
+        this.ctx.lineWidth = isSelected ? 3 : 2;
+        this.ctx.strokeRect(x, y, width, height);
+
+        img.onload = () => {
+            // Desenha a imagem de fundo
+            this.ctx.drawImage(img, x, y, width, height);
+            
+            // Overlay com gradiente
+            const gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0.1)');
+            gradient.addColorStop(0.6, 'rgba(0, 0, 0, 0.3)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(x, y, width, height);
+            
+            // Header com nome da carta
+            this.renderCardHeader(carta, x, y, width, height);
+            
+            // Footer com atributos/efeitos
+            this.renderCardFooter(carta, x, y, width, height, cardType);
+            
+            // Borda final
+            this.ctx.strokeStyle = isSelected ? '#fcd34d' : '#d4af37';
+            this.ctx.lineWidth = isSelected ? 3 : 2;
+            this.ctx.strokeRect(x, y, width, height);
+            
+            // Efeito de seleção mais visível
+            if (isSelected) {
+                this.ctx.shadowColor = '#fcd34d';
+                this.ctx.shadowBlur = 20;
+                this.ctx.strokeStyle = '#fcd34d';
+                this.ctx.lineWidth = 4;
+                this.ctx.strokeRect(x-2, y-2, width+4, height+4);
+                this.ctx.shadowBlur = 0;
+                
+                // Adiciona um brilho interno
+                this.ctx.strokeStyle = '#fff';
+                this.ctx.lineWidth = 1;
+                this.ctx.strokeRect(x+3, y+3, width-6, height-6);
+            }
+        };
+
+        img.onerror = () => {
+            // Fallback se imagem não carregar
+            this.renderCardPlaceholder(x, y, width, height, carta.nome, cardType);
+            this.renderCardHeader(carta, x, y, width, height);
+            this.renderCardFooter(carta, x, y, width, height, cardType);
+            
+            this.ctx.strokeStyle = isSelected ? '#fcd34d' : '#d4af37';
+            this.ctx.lineWidth = isSelected ? 3 : 2;
+            this.ctx.strokeRect(x, y, width, height);
+        };
+    }
+
+    /**
+     * Verifica se uma carta está selecionada
+     */
+    isCardSelected(carta, cardType) {
+        if (!window.gameManager || !this.currentGameState) return false;
+        
+        // Verifica se é a carta do jogador selecionada
+        if (window.gameManager.selectedPlayerCard !== null) {
+            const selectedCard = this.currentGameState.maoJogador[window.gameManager.selectedPlayerCard];
+            return selectedCard && selectedCard.id === carta.id;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Renderiza o header da carta (nome)
+     */
+    renderCardHeader(carta, x, y, width, height) {
+        // Background do header com opacidade
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        this.ctx.fillRect(x + 2, y + 2, width - 4, 25);
+        
+        // Borda do header
+        this.ctx.strokeStyle = 'rgba(212, 175, 55, 0.8)';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x + 2, y + 2, width - 4, 25);
+        
+        // Nome da carta
+        this.ctx.fillStyle = '#d4af37';
+        this.ctx.font = `bold ${width > 100 ? '12' : '10'}px Cinzel`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(carta.nome, x + width/2, y + 18);
+    }
+
+    /**
+     * Renderiza o footer da carta (atributos/efeitos)
+     */
+    renderCardFooter(carta, x, y, width, height, cardType) {
+        const footerHeight = 40;
+        const footerY = y + height - footerHeight;
+        
+        // Background do footer com opacidade
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        this.ctx.fillRect(x + 2, footerY, width - 4, footerHeight - 2);
+        
+        // Borda do footer
+        this.ctx.strokeStyle = 'rgba(212, 175, 55, 0.8)';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x + 2, footerY, width - 4, footerHeight - 2);
+        
+        if (cardType === 'hero') {
+            // Mostra atributos principais do herói
+            this.renderHeroAttributes(carta, x, footerY, width, footerHeight);
+        }
+        // Equipamentos e terrenos já têm seus próprios renders específicos
+    }
+
+    /**
+     * Renderiza atributos do herói no footer
+     */
+    renderHeroAttributes(carta, x, y, width, height) {
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = `${width > 100 ? '9' : '8'}px Cinzel`;
+        this.ctx.textAlign = 'left';
+        
+        const attributes = ['forca', 'destreza', 'constituicao', 'inteligencia'];
+        const icons = ['💪', '🏹', '🛡️', '📚'];
+        
+        let lineHeight = 10;
+        attributes.forEach((attr, index) => {
+            if (carta[attr]) {
+                const icon = icons[index];
+                const value = carta[attr];
+                const text = `${icon}${value}`;
+                
+                if (index < 2) {
+                    this.ctx.fillText(text, x + 5, y + 12 + (index * lineHeight));
+                } else {
+                    this.ctx.fillText(text, x + width/2 + 5, y + 12 + ((index-2) * lineHeight));
+                }
+            }
+        });
+    }
+
+    /**
+     * Renderiza verso da carta
+     */
+    renderCardBack(x, y, width, height) {
+        // Tenta carregar a imagem do verso da carta
+        const backImg = new Image();
+        backImg.src = 'assets/images/default/cards/back_1.png';
+        
+        // Renderiza fundo padrão primeiro (fallback)
+        this.ctx.fillStyle = '#4a4a4a';
+        this.ctx.fillRect(x, y, width, height);
+        
+        // Padrão decorativo (fallback)
+        this.ctx.fillStyle = '#666';
+        for (let i = 0; i < Math.floor(width/60); i++) {
+            for (let j = 0; j < Math.floor(height/60); j++) {
+                this.ctx.fillRect(x + i * 60 + 20, y + j * 60 + 20, 20, 20);
+            }
+        }
+        
+        // Borda
+        this.ctx.strokeStyle = '#fff';
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeRect(x, y, width, height);
+        
+        // Quando a imagem carregar, substitui o padrão
+        backImg.onload = () => {
+            // Limpa a área da carta
+            this.ctx.clearRect(x, y, width, height);
+            
+            // Desenha a imagem do verso
+            this.ctx.drawImage(backImg, x, y, width, height);
+            
+            // Adiciona borda dourada para destacar
+            this.ctx.strokeStyle = '#d4af37';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(x, y, width, height);
+        };
+        
+        backImg.onerror = () => {
+            // Mantém o padrão decorativo se a imagem não carregar
+            console.log('Não foi possível carregar a imagem do verso da carta');
+        };
+    }
+
+    /**
+     * Renderiza placeholder quando imagem não carrega
+     */
+    renderCardPlaceholder(x, y, width, height, nome, cardType = 'hero') {
+        // Diferentes cores baseadas no tipo de carta
+        let gradient;
+        if (cardType === 'equipment') {
+            gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, '#f59e0b');
+            gradient.addColorStop(1, '#d97706');
+        } else if (cardType === 'terrain') {
+            gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, '#8b5cf6');
+            gradient.addColorStop(1, '#7c3aed');
+        } else {
+            gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, '#6366f1');
+            gradient.addColorStop(1, '#3730a3');
+        }
+
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(x, y, width, height);
+        
+        // Nome centralizado
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = `bold ${Math.max(12, width * 0.06)}px sans-serif`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(nome, x + width / 2, y + height / 2);
+    }
+
+    /**
+     * Renderiza moldura e informações da carta
+     */
+    renderCardFrame(carta, x, y, width, height, cardType = 'hero') {
+        // Borda da carta
+        this.ctx.strokeStyle = '#fff';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(x, y, width, height);
+
+        // Nome da carta no topo (ajustado para cartas menores)
+        const headerHeight = Math.max(25, height * 0.15);
+        this.ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        this.ctx.fillRect(x, y, width, headerHeight);
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = `bold ${Math.max(10, width * 0.08)}px sans-serif`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(carta.nome, x + width / 2, y + headerHeight * 0.7);
+
+        // Renderiza informações específicas do tipo de carta
+        if (cardType === 'hero') {
+            this.renderAttributeBar(carta, x, y, width, height);
+        } else if (cardType === 'equipment') {
+            this.renderEquipmentInfo(carta, x, y, width, height);
+        } else if (cardType === 'terrain') {
+            this.renderTerrainInfo(carta, x, y, width, height);
+        }
+    }
+
+    /**
+     * Renderiza barra de atributos
+     */
+    renderAttributeBar(carta, x, y, width, height) {
+        const atributos = [
+            { nome: 'forca', cor: '#FF4444', icone: '⚔️' },
+            { nome: 'destreza', cor: '#44FF44', icone: '🏹' },
+            { nome: 'inteligencia', cor: '#4488FF', icone: '🧠' },
+            { nome: 'constituicao', cor: '#FFFF44', icone: '💪' },
+            { nome: 'defesa', cor: '#FFAA44', icone: '🛡️' },
+        ];
+
+        const barraAltura = Math.max(30, height * 0.25);
+        this.ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        this.ctx.fillRect(x, y + height - barraAltura, width, barraAltura);
+
+        const spacing = width / atributos.length;
+
+        atributos.forEach((attr, i) => {
+            const centerX = x + spacing * i + spacing / 2;
+
+            // Ícone (ajustado para cartas menores)
+            this.ctx.font = `${Math.max(8, width * 0.08)}px sans-serif`;
+            this.ctx.fillStyle = attr.cor;
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(attr.icone, centerX, y + height - barraAltura + barraAltura * 0.4);
+
+            // Valor (ajustado para cartas menores)
+            this.ctx.font = `bold ${Math.max(8, width * 0.08)}px sans-serif`;
+            this.ctx.fillStyle = '#fff';
+            this.ctx.fillText(carta[attr.nome] || 0, centerX, y + height - barraAltura + barraAltura * 0.8);
+        });
+    }
+
+    /**
+     * Renderiza informações do equipamento
+     */
+    renderEquipmentInfo(equipamento, x, y, width, height) {
+        const barraAltura = Math.max(30, height * 0.25);
+        this.ctx.fillStyle = 'rgba(245, 158, 11, 0.8)';
+        this.ctx.fillRect(x, y + height - barraAltura, width, barraAltura);
+
+        // Ícone do equipamento
+        this.ctx.font = `${Math.max(16, width * 0.12)}px sans-serif`;
+        this.ctx.fillStyle = '#fff';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('🛡️', x + width / 2, y + height - barraAltura + barraAltura * 0.3);
+
+        // Bônus do equipamento
+        if (equipamento.bonus) {
+            const bonusText = Object.entries(equipamento.bonus)
+                .map(([attr, value]) => `+${value} ${attr}`)
+                .join(', ');
+            this.ctx.font = `bold ${Math.max(8, width * 0.06)}px sans-serif`;
+            this.ctx.fillStyle = '#fff';
+            this.ctx.fillText(bonusText, x + width / 2, y + height - barraAltura + barraAltura * 0.7);
+        }
+    }
+
+    /**
+     * Renderiza informações do terreno
+     */
+    renderTerrainInfo(terreno, x, y, width, height) {
+        const barraAltura = Math.max(30, height * 0.25);
+        this.ctx.fillStyle = 'rgba(139, 92, 246, 0.8)';
+        this.ctx.fillRect(x, y + height - barraAltura, width, barraAltura);
+
+        // Ícone do terreno
+        this.ctx.font = `${Math.max(16, width * 0.12)}px sans-serif`;
+        this.ctx.fillStyle = '#fff';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('🏰', x + width / 2, y + height - barraAltura + barraAltura * 0.2);
+
+        // Efeitos do terreno
+        let effectsText = '';
+        if (terreno.bonus) {
+            Object.entries(terreno.bonus).forEach(([attr, value]) => {
+                effectsText += `+${value} ${attr} `;
+            });
+        }
+        if (terreno.punicao) {
+            Object.entries(terreno.punicao).forEach(([attr, value]) => {
+                effectsText += `${value} ${attr} `;
+            });
+        }
+
+        if (effectsText) {
+            this.ctx.font = `bold ${Math.max(7, width * 0.05)}px sans-serif`;
+            this.ctx.fillStyle = '#fff';
+            this.ctx.fillText(effectsText.trim(), x + width / 2, y + height - barraAltura + barraAltura * 0.8);
+        }
+    }
+
+    /**
+     * Renderiza área de batalha no centro
+     */
+    renderBattleArea(gameState) {
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const battleCardWidth = 100;
+        const battleCardHeight = 150;
+
+        // Carta do jogador
+        if (gameState.cartaJogadorRodada) {
+            this.renderCard(gameState.cartaJogadorRodada, centerX - battleCardWidth - 10, centerY - battleCardHeight/2, battleCardWidth, battleCardHeight, false, 'hero');
+        }
+
+        // Carta do oponente
+        if (gameState.cartaOponenteRodada) {
+            this.renderCard(gameState.cartaOponenteRodada, centerX + 10, centerY - battleCardHeight/2, battleCardWidth, battleCardHeight, false, 'hero');
+        }
+
+        // Equipamento do jogador (se houver)
+        if (gameState.equipamentoJogadorRodada) {
+            const equipWidth = 70;
+            const equipHeight = 100;
+            this.renderCard(gameState.equipamentoJogadorRodada, centerX - battleCardWidth - 90, centerY + 60, equipWidth, equipHeight, false, 'equipment');
+        }
+
+        // Equipamento do oponente (se houver)
+        if (gameState.equipamentoOponenteRodada) {
+            const equipWidth = 70;
+            const equipHeight = 100;
+            this.renderCard(gameState.equipamentoOponenteRodada, centerX + 120, centerY - 160, equipWidth, equipHeight, false, 'equipment');
+        }
+
+        // Terreno da rodada (se houver)
+        if (gameState.terrenoRodada) {
+            const terrainWidth = 120;
+            const terrainHeight = 80;
+            this.renderCard(gameState.terrenoRodada, centerX - terrainWidth/2, centerY + 80, terrainWidth, terrainHeight, false, 'terrain');
+        }
+
+        // VS no centro
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = 'bold 24px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('VS', centerX, centerY + 5);
+
+        // Informações da rodada
+        if (gameState.atributoRodada) {
+            this.ctx.fillStyle = '#fff';
+            this.ctx.font = 'bold 16px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(`Atributo: ${gameState.atributoRodada}`, centerX, centerY - 100);
+        }
+    }
+
+    /**
+     * Renderiza resultado da rodada
+     */
+    renderRoundResult(gameState) {
+        if (!gameState.resultadoTexto) return;
+
+        this.ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        this.ctx.fillRect(0, this.canvas.height - 60, this.canvas.width, 40);
+
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '14px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(gameState.resultadoTexto, this.canvas.width / 2, this.canvas.height - 35);
+    }
+
+    /**
+     * Renderiza todas as cartas lado a lado (heróis, terrenos, equipamentos)
+     */
+    renderAllCards(gameState) {
+        const cardWidth = 140;
+        const cardHeight = 200;
+        const spacing = 15;
+        const rowSpacing = 20;
+        
+        // Coleta todas as cartas para renderizar
+        let allPlayerCards = [];
+        let allOpponentCards = [];
+        
+        // Adiciona cartas de heróis
+        if (gameState.maoJogador) {
+            gameState.maoJogador.forEach((carta, index) => {
+                allPlayerCards.push({
+                    carta: carta,
+                    type: 'hero',
+                    originalIndex: index,
+                    showBack: gameState.modoCartasOcultas || gameState.cartasJogadorViradas.includes(index)
+                });
+            });
+        }
+        
+        if (gameState.maoOponente) {
+            gameState.maoOponente.forEach((carta, index) => {
+                allOpponentCards.push({
+                    carta: carta,
+                    type: 'hero',
+                    originalIndex: index,
+                    showBack: true // Oponente sempre virado
+                });
+            });
+        }
+        
+        // Adiciona terrenos (se existirem cartas de terreno)
+        if (gameState.terrenosDisponiveis && gameState.terrenosDisponiveis.length > 0) {
+            gameState.terrenosDisponiveis.slice(0, 3).forEach((terreno, index) => {
+                allPlayerCards.push({
+                    carta: terreno,
+                    type: 'terrain',
+                    originalIndex: index,
+                    showBack: false
+                });
+            });
+            
+            // Terrenos do oponente (simulados)
+            gameState.terrenosDisponiveis.slice(0, 3).forEach((terreno, index) => {
+                allOpponentCards.push({
+                    carta: terreno,
+                    type: 'terrain',
+                    originalIndex: index,
+                    showBack: true
+                });
+            });
+        }
+        
+        // Adiciona equipamentos (se existirem cartas de equipamento)
+        if (gameState.equipamentosDisponiveis && gameState.equipamentosDisponiveis.length > 0) {
+            gameState.equipamentosDisponiveis.slice(0, 3).forEach((equipamento, index) => {
+                allPlayerCards.push({
+                    carta: equipamento,
+                    type: 'equipment',
+                    originalIndex: index,
+                    showBack: false
+                });
+            });
+            
+            // Equipamentos do oponente (simulados)
+            gameState.equipamentosDisponiveis.slice(0, 3).forEach((equipamento, index) => {
+                allOpponentCards.push({
+                    carta: equipamento,
+                    type: 'equipment',
+                    originalIndex: index,
+                    showBack: true
+                });
+            });
+        }
+        
+        // Renderiza cartas do jogador (parte inferior)
+        this.renderCardRow(allPlayerCards, this.canvas.height - cardHeight - 50, cardWidth, cardHeight, spacing, 'player');
+        
+        // Renderiza cartas do oponente (parte superior)  
+        this.renderCardRow(allOpponentCards, 40, cardWidth, cardHeight, spacing, 'opponent');
+    }
+
+    /**
+     * Renderiza uma linha de cartas
+     */
+    renderCardRow(cards, y, cardWidth, cardHeight, spacing, owner) {
+        if (cards.length === 0) return;
+        
+        const totalWidth = (cardWidth * cards.length) + (spacing * (cards.length - 1));
+        const startX = (this.canvas.width - totalWidth) / 2;
+        
+        cards.forEach((cardData, index) => {
+            const x = startX + (index * (cardWidth + spacing));
+            
+            this.renderCard(cardData.carta, x, y, cardWidth, cardHeight, cardData.showBack, cardData.type);
+            
+            // Adiciona indicador de tipo da carta
+            this.renderCardTypeIndicator(cardData.type, x, y, cardWidth, cardHeight);
+        });
+    }
+
+    /**
+     * Adiciona indicador visual do tipo de carta
+     */
+    renderCardTypeIndicator(type, x, y, width, height) {
+        let icon = '';
+        let color = '#fff';
+        
+        switch(type) {
+            case 'hero':
+                icon = '⚔️';
+                color = '#4f46e5';
+                break;
+            case 'terrain':
+                icon = '🏰';
+                color = '#8b5cf6';
+                break;
+            case 'equipment':
+                icon = '🛡️';
+                color = '#f59e0b';
+                break;
+        }
+        
+        // Renderiza o indicador no canto superior direito da carta
+        this.ctx.save();
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x + width - 25, y, 25, 25);
+        
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '14px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(icon, x + width - 12.5, y + 18);
+        this.ctx.restore();
+    }
+}

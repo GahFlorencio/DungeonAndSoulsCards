@@ -4,6 +4,7 @@
 
 // Variável global para acesso ao gerenciador do jogo
 window.gameManager = null;
+window.gameState = null;
 
 // Inicializa o jogo quando a página carrega
 document.addEventListener('DOMContentLoaded', async () => {
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Cria instância do gerenciador do jogo
         window.gameManager = new GameManager();
+        window.gameState = window.gameManager.gameState;
         
         // Configura event listeners
         setupEventListeners();
@@ -37,6 +39,87 @@ function setupEventListeners() {
         playBtn.addEventListener('click', () => {
             if (window.gameManager) {
                 window.gameManager.playRound();
+            }
+        });
+    }
+
+    // Novo botão de batalha
+    const battleButton = document.getElementById('battleButton');
+    if (battleButton) {
+        battleButton.addEventListener('click', () => {
+            if (window.gameManager) {
+                window.gameManager.showDiceAnimation();
+            }
+        });
+    }
+
+    // Event listeners para roda de ações (atributos)
+    const wheelOptions = document.querySelectorAll('.wheel-option');
+    wheelOptions.forEach(option => {
+        option.addEventListener('click', (event) => {
+            const attribute = event.currentTarget.getAttribute('data-attribute');
+            if (window.gameManager && attribute) {
+                window.gameManager.selectAttribute(attribute);
+            }
+        });
+    });
+
+    // Botões de demonstração das cartas viradas
+    const demoFaceDownEquipment = document.getElementById('demoFaceDownEquipment');
+    if (demoFaceDownEquipment) {
+        demoFaceDownEquipment.addEventListener('click', () => {
+            if (window.gameManager && window.gameManager.uiManager) {
+                window.gameManager.uiManager.showEquipmentModalFaceDown();
+            }
+        });
+    }
+
+    const demoFaceDownTerrain = document.getElementById('demoFaceDownTerrain');
+    if (demoFaceDownTerrain) {
+        demoFaceDownTerrain.addEventListener('click', () => {
+            if (window.gameManager && window.gameManager.uiManager) {
+                window.gameManager.uiManager.showTerrainModalFaceDown();
+            }
+        });
+    }
+
+    const demoRevealEquipment = document.getElementById('demoRevealEquipment');
+    if (demoRevealEquipment) {
+        demoRevealEquipment.addEventListener('click', () => {
+            if (window.gameManager && window.gameManager.uiManager) {
+                showRevealDemo();
+            }
+        });
+    }
+
+    // Controles para cartas no tabuleiro
+    const toggleHiddenMode = document.getElementById('toggleHiddenMode');
+    if (toggleHiddenMode) {
+        toggleHiddenMode.addEventListener('click', () => {
+            if (window.gameManager) {
+                if (window.gameManager.gameState.modoCartasOcultas) {
+                    window.gameManager.disableHiddenCardsMode();
+                } else {
+                    window.gameManager.enableHiddenCardsMode();
+                }
+            }
+        });
+    }
+
+    const hidePlayerCards = document.getElementById('hidePlayerCards');
+    if (hidePlayerCards) {
+        hidePlayerCards.addEventListener('click', () => {
+            if (window.gameManager) {
+                window.gameManager.hideAllPlayerCards();
+            }
+        });
+    }
+
+    const revealPlayerCards = document.getElementById('revealPlayerCards');
+    if (revealPlayerCards) {
+        revealPlayerCards.addEventListener('click', () => {
+            if (window.gameManager) {
+                window.gameManager.revealAllPlayerCards();
             }
         });
     }
@@ -161,34 +244,36 @@ function showError(message) {
     
     const errorDiv = document.createElement('div');
     errorDiv.innerHTML = `
-        <div style="
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ef4444;
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            z-index: 10000;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        ">
-            <h3>❌ Erro</h3>
-            <p style="margin: 1rem 0;">${message}</p>
-            <button onclick="this.parentElement.parentElement.remove()" style="
-                background: white;
-                color: #ef4444;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 5px;
-                cursor: pointer;
-            ">
-                Fechar
-            </button>
-        </div>
+                </div>
     `;
-    document.body.appendChild(errorDiv);
+    
+    document.body.appendChild(errorElement);
+}
+
+/**
+ * Demonstração das cartas com reveal on click
+ */
+function showRevealDemo() {
+    const existingModal = document.querySelector('.modal-overlay');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    const modal = window.gameManager.uiManager.createModal(
+        '👁️ Demo: Clique para Revelar',
+        'Clique nas cartas para revelá-las',
+        window.gameManager.uiManager.createEquipmentCardsWithReveal(),
+        () => {
+            // Fechar modal
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) modal.remove();
+        },
+        true, // Botão sempre habilitado
+        true,  // Permite fechar
+        'Fechar Demo'
+    );
+
+    document.body.appendChild(modal);
 }
 
 /**

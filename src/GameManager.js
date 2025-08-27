@@ -11,6 +11,11 @@ class GameManager {
         // Estado da fase do jogo
         this.gamePhase = 'SETUP'; // SETUP, EQUIPMENT_SELECTION, TERRAIN_SELECTION, PLAYING
         this.setupData = null;
+        
+        // Novo sistema de seleção
+        this.selectedPlayerCard = null;
+        this.selectedAttribute = null;
+        this.battleLog = [];
 
         this.initializeGame();
     }
@@ -23,13 +28,21 @@ class GameManager {
             return;
         }
 
-        // Inicializa componentes de UI
-        const canvas = document.getElementById('gameCanvas');
-        this.cardRenderer = new CardRenderer(canvas);
+        // Inicializa componentes de UI (novo sistema HTML/DOM)
+        this.cardRenderer = new CardRenderer();
         this.uiManager = new UIManager(this.gameState, this.cardManager);
 
         // Inicia fase de preparação
         this.startSetupPhase();
+        
+        // Força a renderização inicial das cartas
+        setTimeout(() => {
+            this.cardRenderer.renderAllCards();
+        }, 100);
+        
+        // Inicializa battle log
+        this.addBattleLogEntry('🎮 Bem-vindo ao Dungeon & Souls Cards!', 'system');
+        this.addBattleLogEntry('⚔️ Preparando battlefield...', 'system');
     }
 
     /**
@@ -39,22 +52,40 @@ class GameManager {
         this.gamePhase = 'SETUP';
         this.gameState.reset();
 
-        // Distribui cartas e obtém recursos disponíveis
-        this.setupData = this.cardManager.distributeCards();
-        this.gameState.cartasJogador = this.cardManager.cartasJogador;
-        this.gameState.cartasTerreno = this.cardManager.cartasTerreno;
-        this.gameState.cartasEquipamento = this.cardManager.cartasEquipamento;
-        
-        this.gameState.maoJogador = this.setupData.maoJogador;
-        this.gameState.maoOponente = this.setupData.maoOponente;
+        try {
+            // Distribui cartas e obtém recursos disponíveis
+            this.setupData = this.cardManager.distributeCards();
+            this.gameState.cartasJogador = this.cardManager.cartasJogador;
+            this.gameState.cartasTerreno = this.cardManager.cartasTerreno;
+            this.gameState.cartasEquipamento = this.cardManager.cartasEquipamento;
+            
+            this.gameState.maoJogador = this.setupData.maoJogador;
+            this.gameState.maoOponente = this.setupData.maoOponente;
 
-        // Oponente seleciona recursos automaticamente
-        const opponentResources = this.cardManager.selectOpponentResources();
-        this.gameState.equipamentosOponente = opponentResources.equipamentosOponente;
-        this.gameState.terrenoOponente = opponentResources.terrenoOponente;
+            // Oponente seleciona recursos automaticamente
+            const opponentResources = this.cardManager.selectOpponentResources();
+            this.gameState.equipamentosOponente = opponentResources.equipamentosOponente;
+            this.gameState.terrenoOponente = opponentResources.terrenoOponente;
 
-        // Inicia seleção de equipamentos do jogador
-        this.startEquipmentSelection();
+            // Inicia seleção de equipamentos do jogador
+            this.startEquipmentSelection();
+        } catch (error) {
+            console.error('Erro no setup, usando cartas de teste:', error);
+            
+            // Fallback: Cria cartas de teste temporárias
+            const cartasTeste = [
+                { id: 1, nome: 'Guerreiro', forca: 8, destreza: 4, constituicao: 7, inteligencia: 3, tipo: 'hero' },
+                { id: 2, nome: 'Mago', forca: 3, destreza: 5, constituicao: 4, inteligencia: 8, tipo: 'hero' },
+                { id: 3, nome: 'Arqueiro', forca: 5, destreza: 8, constituicao: 5, inteligencia: 6, tipo: 'hero' }
+            ];
+
+            // Define as mãos dos jogadores
+            this.gameState.maoJogador = [...cartasTeste];
+            this.gameState.maoOponente = [...cartasTeste];
+            
+            // Atualiza display diretamente
+            this.updateDisplay();
+        }
     }
 
     /**
@@ -425,7 +456,8 @@ class GameManager {
      */
     updateDisplay() {
         this.uiManager.updateInterface();
-        this.cardRenderer.render(this.gameState);
+        this.cardRenderer.renderAllCards();
+        this.updateGameStatus();
 
         if (this.gameState.isGameFinished()) {
             this.uiManager.showGameResult();
@@ -519,5 +551,329 @@ class GameManager {
         }
 
         this.gameState.maoOponente = this.gameState.maoOponente.filter(c => c !== carta);
+    }
+
+    /**
+     * Métodos para controlar cartas viradas/ocultas no tabuleiro
+     */
+    
+    // Ativa modo onde todas as cartas iniciam viradas
+    enableHiddenCardsMode() {
+        this.gameState.modoCartasOcultas = true;
+        this.updateDisplay();
+    }
+
+    // Desativa modo de cartas ocultas
+    disableHiddenCardsMode() {
+        this.gameState.modoCartasOcultas = false;
+        this.gameState.cartasJogadorViradas = [];
+        this.gameState.cartasOponenteViradas = [];
+        this.updateDisplay();
+    }
+
+    // Vira uma carta específica do jogador (por índice)
+    flipPlayerCard(cardIndex) {
+        const index = this.gameState.cartasJogadorViradas.indexOf(cardIndex);
+        if (index > -1) {
+            // Remove da lista (revela a carta)
+            this.gameState.cartasJogadorViradas.splice(index, 1);
+        } else {
+            // Adiciona na lista (esconde a carta)
+            this.gameState.cartasJogadorViradas.push(cardIndex);
+        }
+        this.updateDisplay();
+    }
+
+    // Vira uma carta específica do oponente (por índice)
+    flipOpponentCard(cardIndex) {
+        const index = this.gameState.cartasOponenteViradas.indexOf(cardIndex);
+        if (index > -1) {
+            this.gameState.cartasOponenteViradas.splice(index, 1);
+        } else {
+            this.gameState.cartasOponenteViradas.push(cardIndex);
+        }
+        this.updateDisplay();
+    }
+
+    // Revela todas as cartas do jogador
+    revealAllPlayerCards() {
+        this.gameState.cartasJogadorViradas = [];
+        this.updateDisplay();
+    }
+
+    // Revela todas as cartas do oponente
+    revealAllOpponentCards() {
+        this.gameState.cartasOponenteViradas = [];
+        this.updateDisplay();
+    }
+
+    // Esconde todas as cartas do jogador
+    hideAllPlayerCards() {
+        this.gameState.cartasJogadorViradas = [0, 1, 2];
+        this.updateDisplay();
+    }
+
+    // Esconde todas as cartas do oponente
+    hideAllOpponentCards() {
+        this.gameState.cartasOponenteViradas = [0, 1, 2];
+        this.updateDisplay();
+    }
+
+    /**
+     * Sistema de Battle Log
+     */
+    addBattleLogEntry(message, type = 'system') {
+        this.battleLog.push({
+            message,
+            type,
+            timestamp: Date.now()
+        });
+        
+        this.updateBattleLogDisplay();
+    }
+
+    updateBattleLogDisplay() {
+        const battleLogElement = document.getElementById('battleLog');
+        if (!battleLogElement) return;
+
+        // Mantém apenas os últimos 50 entries para performance
+        if (this.battleLog.length > 50) {
+            this.battleLog = this.battleLog.slice(-50);
+        }
+
+        const logHTML = this.battleLog
+            .map(entry => `<div class="log-entry ${entry.type}">${entry.message}</div>`)
+            .join('');
+        
+        battleLogElement.innerHTML = logHTML;
+        
+        // Scroll automático para o final
+        battleLogElement.scrollTop = battleLogElement.scrollHeight;
+    }
+
+    /**
+     * Atualiza interface do status do jogo
+     */
+    updateGameStatus() {
+        // Atualiza informações na sidebar
+        const currentRound = document.getElementById('currentRound');
+        const currentTurn = document.getElementById('currentTurn');
+        const whoStarts = document.getElementById('whoStarts');
+        const currentPlayer = document.getElementById('currentPlayer');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+
+        if (currentRound) {
+            currentRound.textContent = `${this.gameState.rodadaAtual}/${this.gameState.maxRodadas}`;
+        }
+
+        if (currentTurn) {
+            currentTurn.textContent = this.gameState.turnoAtual;
+        }
+
+        if (whoStarts) {
+            const starter = this.gameState.jogadorIniciante === 1 ? 'Jogador' : 
+                           this.gameState.jogadorIniciante === 2 ? 'Oponente' : '-';
+            whoStarts.textContent = starter;
+        }
+
+        if (currentPlayer) {
+            // Determina de quem é a vez baseado no estado do jogo
+            const currentPlayerText = this.determineCurrentPlayer();
+            currentPlayer.textContent = currentPlayerText;
+        }
+
+        if (scoreDisplay) {
+            scoreDisplay.textContent = `${this.gameState.pontosJogador} - ${this.gameState.pontosOponente}`;
+        }
+    }
+
+    determineCurrentPlayer() {
+        if (this.gamePhase === 'SETUP' || this.gamePhase === 'EQUIPMENT_SELECTION' || this.gamePhase === 'TERRAIN_SELECTION') {
+            return 'Setup';
+        }
+        
+        // Durante o jogo, determina baseado no turno e iniciativa
+        if (this.gameState.turnoAtual === 1) {
+            return this.gameState.jogadorIniciante === 1 ? 'Jogador' : 'Oponente';
+        } else {
+            return this.gameState.jogadorIniciante === 1 ? 'Oponente' : 'Jogador';
+        }
+    }
+
+    /**
+     * Seleção de atributos via roda de ações
+     */
+    selectAttribute(attribute) {
+        if (!this.selectedPlayerCard) return;
+
+        this.selectedAttribute = attribute;
+        
+        // Esconde a roda de ações
+        this.hideActionWheel();
+        
+        // Mostra o botão de batalha
+        const battleButton = document.getElementById('battleButton');
+        if (battleButton) {
+            battleButton.classList.remove('hidden');
+        }
+
+        // Log da seleção
+        const carta = this.gameState.maoJogador[this.selectedPlayerCard];
+        const attributeName = this.getAttributeDisplayName(attribute);
+        this.addBattleLogEntry(`🎯 Jogador selecionou: ${carta.nome} (${attributeName})`, 'player');
+    }
+
+    getAttributeDisplayName(attribute) {
+        const names = {
+            'forca': 'Força',
+            'destreza': 'Destreza', 
+            'constituicao': 'Constituição',
+            'inteligencia': 'Inteligência'
+        };
+        return names[attribute] || attribute;
+    }
+
+    /**
+     * Animação dos dados no centro do canvas
+     */
+    showDiceAnimation() {
+        const diceAnimation = document.getElementById('diceAnimation');
+        if (!diceAnimation) return;
+
+        diceAnimation.classList.remove('hidden');
+        
+        // Simula rolagem dos dados por 2 segundos
+        setTimeout(() => {
+            // Gera valores dos dados (1-6)
+            const dice1 = Math.floor(Math.random() * 6) + 1;
+            const dice2 = Math.floor(Math.random() * 6) + 1;
+            const total = dice1 + dice2;
+            
+            // Atualiza os dados visuais
+            document.getElementById('dice1').textContent = this.getDiceEmoji(dice1);
+            document.getElementById('dice2').textContent = this.getDiceEmoji(dice2);
+            document.getElementById('diceResult').textContent = `Resultado: ${total}`;
+            
+            // Remove a animação após mais 1 segundo
+            setTimeout(() => {
+                diceAnimation.classList.add('hidden');
+                this.processBattleResult(total);
+            }, 1500);
+            
+        }, 2000);
+    }
+
+    getDiceEmoji(value) {
+        const diceEmojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        return diceEmojis[value - 1] || '🎲';
+    }
+
+    processBattleResult(diceTotal) {
+        // Aqui você pode usar o resultado dos dados para determinar bônus ou outros efeitos
+        this.addBattleLogEntry(`🎲 Dados rolados: ${diceTotal}`, 'system');
+        
+        // Continua com a lógica normal de batalha
+        this.executeBattle();
+    }
+
+    /**
+     * Executa a batalha com o novo sistema
+     */
+    executeBattle() {
+        if (!this.selectedPlayerCard || !this.selectedAttribute) return;
+
+        const playerCard = this.gameState.maoJogador[this.selectedPlayerCard];
+        // Implementar lógica de batalha aqui
+        
+        this.addBattleLogEntry(`⚔️ Batalha iniciada!`, 'battle-result');
+        
+        // Reset das seleções
+        this.selectedPlayerCard = null;
+        this.selectedAttribute = null;
+        
+        // Esconde botão de batalha
+        const battleButton = document.getElementById('battleButton');
+        if (battleButton) {
+            battleButton.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Manipula clique em carta do jogador
+     */
+    handlePlayerCardClick(card) {
+        console.log(`Carta selecionada: ${card.nome}`, card);
+        
+        // Armazena a carta selecionada
+        this.selectedPlayerCard = card;
+        
+        // Adiciona entrada no battle log
+        this.addBattleLogEntry(`🎯 ${card.nome} selecionada!`, 'player');
+        
+        // Mostra roda de ações para seleção de atributo
+        this.showActionWheel();
+    }
+    
+    /**
+     * Mostra a roda de ações para seleção de atributo
+     */
+    showActionWheel() {
+        const actionWheel = document.getElementById('actionWheel');
+        if (actionWheel) {
+            actionWheel.classList.remove('hidden');
+            
+            // Adiciona event listeners para os botões de atributo
+            const attributeButtons = actionWheel.querySelectorAll('.wheel-option');
+            attributeButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const attribute = e.currentTarget.dataset.attribute;
+                    this.selectAttribute(attribute);
+                });
+            });
+        }
+    }
+    
+    /**
+     * Esconde a roda de ações
+     */
+    hideActionWheel() {
+        const actionWheel = document.getElementById('actionWheel');
+        if (actionWheel) {
+            actionWheel.classList.add('hidden');
+        }
+    }
+    
+    /**
+     * Seleciona um atributo para batalha
+     */
+    selectAttribute(attribute) {
+        console.log(`Atributo selecionado: ${attribute}`);
+        
+        this.selectedAttribute = attribute;
+        this.hideActionWheel();
+        
+        // Adiciona entrada no battle log
+        const attributeNames = {
+            'forca': 'Força ⚔️',
+            'destreza': 'Destreza 🏹', 
+            'constituicao': 'Constituição 🛡️',
+            'inteligencia': 'Inteligência 📚'
+        };
+        
+        this.addBattleLogEntry(`⚡ Atributo escolhido: ${attributeNames[attribute]}`, 'player');
+        
+        // Mostra botão de batalha
+        const battleButton = document.getElementById('battleButton');
+        if (battleButton) {
+            battleButton.classList.remove('hidden');
+            
+            // Remove event listeners anteriores e adiciona novo
+            const newBattleButton = battleButton.cloneNode(true);
+            battleButton.parentNode.replaceChild(newBattleButton, battleButton);
+            
+            newBattleButton.addEventListener('click', () => {
+                this.startBattle();
+            });
+        }
     }
 }

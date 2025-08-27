@@ -150,6 +150,55 @@ class UIManager {
     }
 
     /**
+     * Mostra modal com cartas de equipamento viradas para baixo (exemplo/demo)
+     */
+    showEquipmentModalFaceDown() {
+        // Remove qualquer modal existente
+        const existingModal = document.querySelector('.modal-overlay');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Inicializa seleção temporária vazia
+        this.tempSelectedEquipments = [];
+
+        const modal = this.createModal(
+            '⚔️ Arsenal Misterioso',
+            'Selecione 2 equipamentos (cartas viradas)',
+            this.createEquipmentCardsFaceDown(),
+            () => this.confirmEquipmentSelection(),
+            false,
+            false
+        );
+
+        document.body.appendChild(modal);
+    }
+
+    /**
+     * Mostra modal com cartas de terreno viradas para baixo (exemplo/demo)
+     */
+    showTerrainModalFaceDown() {
+        // Remove qualquer modal existente
+        const existingModal = document.querySelector('.modal-overlay');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        this.tempSelectedTerrain = null;
+
+        const modal = this.createModal(
+            '🏰 Territórios Ocultos',
+            'Escolha 1 terreno (carta virada)',
+            this.createTerrainCardsFaceDown(),
+            () => this.confirmTerrainSelection(),
+            false,
+            false
+        );
+
+        document.body.appendChild(modal);
+    }
+
+    /**
      * Cria a estrutura do modal
      */
     createModal(title, subtitle, cardsHtml, confirmCallback, confirmEnabled = true, allowClose = true) {
@@ -190,10 +239,24 @@ class UIManager {
     /**
      * Cria HTML das cartas de equipamentos
      */
-    createEquipmentCards(selectedEquipments) {
+    createEquipmentCards(selectedEquipments, faceDown = false) {
         return window.gameManager.setupData.equipamentosDisponiveis.map((equip, index) => {
             // Nunca inicia com equipamentos selecionados no modal
             const selectedClass = '';
+            
+            if (faceDown) {
+                // Carta virada para baixo
+                const backImagePath = 'assets/images/default/cards/back_1.png';
+                return `
+                    <div class="card-modal equipment face-down ${selectedClass}" onclick="window.gameManager.uiManager.toggleEquipmentSelection(${index}, this)">
+                        <div class="card-background" style="background-image: url('${backImagePath}');">
+                            <div class="card-overlay"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Carta normal (virada para cima)
             const bonusText = this.getEquipmentBonusWithIcon(equip);
             const imagePath = `assets/images/equipments/${equip.id}/1.png`;
             const description = equip.descricao || 'Equipamento lendário dos antigos heróis.';
@@ -217,10 +280,24 @@ class UIManager {
     /**
      * Cria HTML das cartas de terrenos
      */
-    createTerrainCards(selectedTerrain) {
+    createTerrainCards(selectedTerrain, faceDown = false) {
         return window.gameManager.setupData.terrenosDisponiveis.map((terreno, index) => {
             const isSelected = selectedTerrain && selectedTerrain.id === terreno.id;
             const selectedClass = isSelected ? 'selected' : '';
+            
+            if (faceDown) {
+                // Carta virada para baixo
+                const backImagePath = 'assets/images/default/cards/back_1.png';
+                return `
+                    <div class="card-modal terrain face-down ${selectedClass}" onclick="window.gameManager.uiManager.selectTerrainInModal(${index}, this)">
+                        <div class="card-background" style="background-image: url('${backImagePath}');">
+                            <div class="card-overlay"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Carta normal (virada para cima)
             const effectText = this.getTerrainEffectWithIcon(terreno);
             const imagePath = `assets/images/terrains/${terreno.id}/1.png`;
             const description = terreno.descricao || 'Terra mística dos antigos reinos.';
@@ -328,6 +405,158 @@ class UIManager {
         // Avança para a próxima fase
         window.gameManager.selectTerrainForSetup(this.tempSelectedTerrain);
         return true;
+    }
+
+    /**
+     * Cria cartas de equipamento viradas para baixo
+     */
+    createEquipmentCardsFaceDown() {
+        return this.createEquipmentCards([], true);
+    }
+
+    /**
+     * Cria cartas de terreno viradas para baixo  
+     */
+    createTerrainCardsFaceDown() {
+        return this.createTerrainCards(null, true);
+    }
+
+    /**
+     * Cria cartas de equipamento viradas para cima
+     */
+    createEquipmentCardsFaceUp(selectedEquipments = []) {
+        return this.createEquipmentCards(selectedEquipments, false);
+    }
+
+    /**
+     * Cria cartas de terreno viradas para cima
+     */
+    createTerrainCardsFaceUp(selectedTerrain = null) {
+        return this.createTerrainCards(selectedTerrain, false);
+    }
+
+    /**
+     * Vira uma carta específica (de baixo para cima ou vice-versa)
+     */
+    flipCard(cardElement, cardType, cardData, faceUp = true) {
+        if (!cardElement || !cardType || !cardData) {
+            console.error('Parâmetros inválidos para flipCard');
+            return;
+        }
+
+        const cardBackground = cardElement.querySelector('.card-background');
+        if (!cardBackground) {
+            console.error('Card background não encontrado');
+            return;
+        }
+
+        if (faceUp) {
+            // Vira para cima - mostra o conteúdo da carta
+            cardElement.classList.remove('face-down');
+            
+            let imagePath, content;
+            if (cardType === 'equipment') {
+                imagePath = `assets/images/equipments/${cardData.id}/1.png`;
+                const bonusText = this.getEquipmentBonusWithIcon(cardData);
+                const description = cardData.descricao || 'Equipamento lendário dos antigos heróis.';
+                content = `
+                    <div class="card-header">
+                        <h3 class="card-title">${cardData.nome}</h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-bonus">${bonusText}</div>
+                        <div class="card-description">${description}</div>
+                    </div>
+                `;
+            } else if (cardType === 'terrain') {
+                imagePath = `assets/images/terrains/${cardData.id}/1.png`;
+                const effectText = this.getTerrainEffectWithIcon(cardData);
+                const description = cardData.descricao || 'Terra mística dos antigos reinos.';
+                content = `
+                    <div class="card-header">
+                        <h3 class="card-title">${cardData.nome}</h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-bonus">${effectText}</div>
+                        <div class="card-description">${description}</div>
+                    </div>
+                `;
+            }
+
+            cardBackground.style.backgroundImage = `url('${imagePath}')`;
+            cardBackground.innerHTML = content;
+            
+        } else {
+            // Vira para baixo - mostra o verso da carta
+            cardElement.classList.add('face-down');
+            const backImagePath = 'assets/images/default/cards/back_1.png';
+            cardBackground.style.backgroundImage = `url('${backImagePath}')`;
+            cardBackground.innerHTML = '<div class="card-overlay"></div>';
+        }
+    }
+
+    /**
+     * Adiciona funcionalidade de click para virar carta (reveal on click)
+     */
+    addFlipOnClickFunctionality(cardElement, cardType, cardData) {
+        if (!cardElement || !cardElement.classList.contains('face-down')) {
+            return;
+        }
+
+        const originalClick = cardElement.getAttribute('onclick');
+        
+        // Substitui o click original por um que vira a carta
+        cardElement.setAttribute('onclick', '');
+        cardElement.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Vira a carta para cima
+            this.flipCard(cardElement, cardType, cardData, true);
+            
+            // Depois de virar, reativa a funcionalidade original
+            setTimeout(() => {
+                if (originalClick) {
+                    cardElement.setAttribute('onclick', originalClick);
+                }
+            }, 300); // Pequeno delay para a animação
+        });
+    }
+
+    /**
+     * Cria cartas de equipamento com reveal on click
+     */
+    createEquipmentCardsWithReveal() {
+        const cardsHTML = this.createEquipmentCardsFaceDown();
+        
+        // Depois que as cartas forem inseridas no DOM, adiciona o reveal
+        setTimeout(() => {
+            const cardElements = document.querySelectorAll('.card-modal.equipment.face-down');
+            cardElements.forEach((cardElement, index) => {
+                const cardData = window.gameManager.setupData.equipamentosDisponiveis[index];
+                this.addFlipOnClickFunctionality(cardElement, 'equipment', cardData);
+            });
+        }, 100);
+        
+        return cardsHTML;
+    }
+
+    /**
+     * Cria cartas de terreno com reveal on click
+     */
+    createTerrainCardsWithReveal() {
+        const cardsHTML = this.createTerrainCardsFaceDown();
+        
+        // Depois que as cartas forem inseridas no DOM, adiciona o reveal
+        setTimeout(() => {
+            const cardElements = document.querySelectorAll('.card-modal.terrain.face-down');
+            cardElements.forEach((cardElement, index) => {
+                const cardData = window.gameManager.setupData.terrenosDisponiveis[index];
+                this.addFlipOnClickFunctionality(cardElement, 'terrain', cardData);
+            });
+        }, 100);
+        
+        return cardsHTML;
     }
 
     /**

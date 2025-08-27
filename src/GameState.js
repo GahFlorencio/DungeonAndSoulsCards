@@ -12,6 +12,19 @@ class GameState {
         this.cartasTerreno = [];
         this.cartasEquipamento = [];
 
+        // Dados de exemplo para demonstração
+        this.terrenosDisponiveis = [
+            { id: 1, nome: "Floresta Sombria", bonus: { destreza: 2 } },
+            { id: 2, nome: "Montanha Rochosa", bonus: { forca: 2 } },
+            { id: 3, nome: "Torre Arcana", bonus: { inteligencia: 2 } }
+        ];
+        
+        this.equipamentosDisponiveis = [
+            { id: 1, nome: "Espada Élfica", bonus: { forca: 1, destreza: 1 } },
+            { id: 2, nome: "Armadura Pesada", bonus: { constituicao: 2 } },
+            { id: 3, nome: "Cajado Mágico", bonus: { inteligencia: 2 } }
+        ];
+
         // Mãos dos jogadores (3 cartas cada)
         this.maoJogador = [];
         this.maoOponente = [];
@@ -48,6 +61,11 @@ class GameState {
         // Cartas jogadas na rodada atual
         this.cartaJogadorRodada = null;
         this.cartaOponenteRodada = null;
+
+        // Controle de cartas viradas/ocultas
+        this.cartasJogadorViradas = []; // Índices das cartas do jogador que devem aparecer viradas
+        this.cartasOponenteViradas = []; // Índices das cartas do oponente que devem aparecer viradas
+        this.modoCartasOcultas = false; // Se true, todas as cartas iniciam viradas
         this.equipamentoJogadorRodada = null;
         this.equipamentoOponenteRodada = null;
 
