@@ -1,0 +1,94 @@
+{
+    "cartas": [
+        {
+            "id": 1,
+            "nome": "Goliath Bárbaro",
+            "forca": 10,
+            "destreza": 4,
+            "inteligencia": 3,
+            "constituicao": 8,
+            "defesa": 5
+        },
+        {
+            "id": 2,
+            "nome": "Meio-Orc Guerreiro",
+            "forca": 9,
+            "destreza": 5,
+            "inteligencia": 3,
+            "constituicao": 7,
+            "defesa": 6
+        },
+        {
+            "id": 3,
+            "nome": "Elfo da Floresta Ladino",
+            "forca": 4,
+            "destreza": 10,
+            "inteligencia": 6,
+            "constituicao": 5,
+            "defesa": 4
+        },
+        {
+            "id": 4,
+            "nome": "Halfling Monge",
+            "forca": 3,
+            "destreza": 9,
+            "inteligencia": 5,
+            "constituicao": 5,
+            "defesa": 3
+        },
+        {
+            "id": 5,
+            "nome": "Tiefling Mago",
+            "forca": 2,
+            "destreza": 4,
+            "inteligencia": 10,
+            "constituicao": 4,
+            "defesa": 3
+        },
+        {
+            "id": 6,
+            "nome": "Gnomo das Rochas Artífice",
+            "forca": 3,
+            "destreza": 5,
+            "inteligencia": 9,
+            "constituicao": 4,
+            "defesa": 4
+        },
+        {
+            "id": 7,
+            "nome": "Anão da Montanha Clérigo",
+            "forca": 6,
+            "destreza": 3,
+            "inteligencia": 5,
+            "constituicao": 10,
+            "defesa": 7
+        },
+        {
+            "id": 8,
+            "nome": "Dracônico Feiticeiro",
+            "forca": 5,
+            "destreza": 4,
+            "inteligencia": 8,
+            "constituicao": 9,
+            "defesa": 5
+        },
+        {
+            "id": 9,
+            "nome": "Humano Paladino",
+            "forca": 7,
+            "destreza": 5,
+            "inteligencia": 5,
+            "constituicao": 6,
+            "defesa": 10
+        },
+        {
+            "id": 10,
+            "nome": "Meio-Elfo Druida",
+            "forca": 5,
+            "destreza": 6,
+            "inteligencia": 7,
+            "constituicao": 5,
+            "defesa": 9
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+  "terrenos": [
+    {
+      "nome": "Floresta",
+      "bonus": {"destreza": 1},
+      "punicao": {"forca": -1}
+    },
+    {
+      "nome": "Montanha",
+      "bonus": {"forca": 1},
+      "punicao": {"destreza": -1}
+    },
+    {
+      "nome": "Pântano",
+      "bonus": {"constituicao": 1},
+      "punicao": {"inteligencia": -1}
+    },
+    {
+      "nome": "Deserto",
+      "bonus": {"destreza": 1},
+      "punicao": {"constituicao": -1}
+    }
+  ]
+}

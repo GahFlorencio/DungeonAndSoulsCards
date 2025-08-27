@@ -1,0 +1,9 @@
+{
+  "equipamentos": [
+    {"nome": "Elmo do Cavaleiro Negro", "bonus": {"forca": 2}},
+    {"nome": "Botas Ágeis", "bonus": {"destreza": 2}},
+    {"nome": "Amuleto do Sábio", "bonus": {"inteligencia": 2}},
+    {"nome": "Cinto da Vitalidade", "bonus": {"constituicao": 2}},
+    {"nome": "Escudo Reforçado", "bonus": {"defesa": 2}}
+  ]
+}
