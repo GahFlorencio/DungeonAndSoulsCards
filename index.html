@@ -1,22 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Jogo de Cartas</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ Dungeon & Souls Cards - Batalha Medieval</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-    <h1>Jogo de Cartas</h1>
-    
-    <div id="cartasJogador"></div>
-    <div id="atributos"></div>
-    <div id="equipamentosJogador"></div>
-    <div id="terrenosJogador"></div>
-    
-    <button id="playBtn">Jogar</button>
-    
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <header class="medieval-header">
+        <div class="crown-decoration">👑</div>
+        <h1 class="medieval-title">⚔️ Dungeon & Souls Cards ⚔️</h1>
+        <div class="medieval-subtitle">~ Batalha Medieval dos Heróis ~</div>
 
-    <script src="main.js"></script>
+        <!-- Informações do jogo movidas do canvas -->
+        <div class="game-status-bar">
+            <div class="status-section">
+                <span class="status-icon">🏰</span>
+                <div id="gameInfo" class="status-text"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="game-container">
+            <!-- Canvas para renderização das cartas -->
+            <div class="battlefield-container">
+                <div class="battlefield-title">🗡️ Campo de Batalha 🗡️</div>
+                <canvas id="gameCanvas" class="medieval-canvas"></canvas>
+            </div>
+
+            <!-- Painel de controles com tema medieval -->
+            <div class="guild-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">🏛️ Guilda dos Heróis</h2>
+                </div>
+
+                <div class="control-section heroes-section">
+                    <div id="cartasJogador"></div>
+                </div>
+
+                <div class="control-section attributes-section">
+                    <div id="atributos"></div>
+                </div>
+
+                <div class="control-section equipment-section">
+                    <div id="equipamentosJogador"></div>
+                </div>
+
+                <div class="control-section terrain-section">
+                    <div id="terrenosJogador"></div>
+                </div>
+
+                <div class="control-section strategy-section">
+                    <div id="selectionFeedback"></div>
+                </div>
+
+                <div class="action-section">
+                    <button id="playBtn" class="battle-button">⚔️ INICIAR BATALHA ⚔️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados com tema medieval -->
+        <div id="roundResult" class="battle-results"></div>
+        <div id="gameResult" class="victory-proclamation"></div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="src/GameState.js"></script>
+    <script src="src/CardManager.js"></script>
+    <script src="src/CardRenderer.js"></script>
+    <script src="src/UIManager.js"></script>
+    <script src="src/GameManager.js"></script>
+    <script src="src/main.js"></script>
 </body>
 </html>

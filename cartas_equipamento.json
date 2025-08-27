@@ -1,9 +1,34 @@
 {
   "equipamentos": [
-    {"nome": "Elmo do Cavaleiro Negro", "bonus": {"forca": 2}},
-    {"nome": "Botas Ágeis", "bonus": {"destreza": 2}},
-    {"nome": "Amuleto do Sábio", "bonus": {"inteligencia": 2}},
-    {"nome": "Cinto da Vitalidade", "bonus": {"constituicao": 2}},
-    {"nome": "Escudo Reforçado", "bonus": {"defesa": 2}}
+    { 
+      "id": 1,
+      "nome": "Elmo do Cavaleiro Negro", 
+      "bonus": {"forca": 2},
+      "descricao": "Forjado nas trevas do abismo, este elmo concede força sobrenatural a seu portador."
+    },
+    {  
+      "id": 2,
+      "nome": "Botas Ágeis", 
+      "bonus": {"destreza": 2},
+      "descricao": "Botas encantadas que fazem o usuário dançar entre as lâminas inimigas como o vento."
+    },
+    {
+      "id": 3,
+      "nome": "Amuleto do Sábio", 
+      "bonus": {"inteligencia": 2},
+      "descricao": "Um cristal ancestral que sussurra os segredos arcanos aos ouvidos de seu dono."
+    },
+    {
+      "id": 4,
+      "nome": "Cinto da Vitalidade", 
+      "bonus": {"constituicao": 2},
+      "descricao": "Tecido com fibras de dragão, restaura a energia vital e fortalece o corpo."
+    },
+    {
+      "id": 5,
+      "nome": "Escudo Reforçado", 
+      "bonus": {"defesa": 2},
+      "descricao": "Escudo lendário que já protegeu reis, capaz de repelir até mesmo magia negra."
+    }
   ]
 }
