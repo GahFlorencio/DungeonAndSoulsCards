@@ -1,0 +1,82 @@
+/* ============================================
+   VARIABLES - Cores, tamanhos e configurações
+   ============================================ */
+
+:root {
+    /* === CORES PRINCIPAIS === */
+    --primary-gold: #DAA520;
+    --secondary-gold: #FFD700;
+    --dark-gold: #B8860B;
+    
+    --primary-brown: #8B4513;
+    --secondary-brown: #654321;
+    --dark-brown: #2c1810;
+    --darker-brown: #1a0f0a;
+    
+    --light-text: #E6D8B5;
+    --dark-text: #2c1810;
+    --accent-text: #F5E6D3;
+    --parchment: #FFF8DC;
+    
+    /* === BACKGROUNDS === */
+    --bg-primary: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
+    --bg-card: linear-gradient(135deg, #FFF8DC, #F5E6D3);
+    --bg-medieval: radial-gradient(circle at 30% 20%, rgba(218, 165, 32, 0.05) 0%, transparent 60%),
+                   radial-gradient(circle at 70% 80%, rgba(139, 69, 19, 0.08) 0%, transparent 60%);
+    
+    /* === GRADIENTES === */
+    --gradient-gold: linear-gradient(135deg, rgba(218, 165, 32, 0.6), rgba(139, 69, 19, 0.8));
+    --gradient-gold-hover: linear-gradient(135deg, rgba(139, 69, 19, 0.6), rgba(218, 165, 32, 0.3));
+    --gradient-border: linear-gradient(45deg, #DAA520, #FFD700, #B8860B);
+    
+    /* === SOMBRAS === */
+    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 8px 25px rgba(218, 165, 32, 0.4);
+    --shadow-text: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    --shadow-glow: 0 0 20px rgba(218, 165, 32, 0.3);
+    
+    /* === BORDAS === */
+    --border-gold: 2px solid var(--primary-gold);
+    --border-brown: 2px solid var(--primary-brown);
+    --border-radius: 8px;
+    --border-radius-large: 12px;
+    
+    /* === TAMANHOS === */
+    --container-max-width: 1400px;
+    --card-width: 140px;
+    --card-height: 190px;
+    --card-width-small: 120px;
+    --card-height-small: 160px;
+    
+    /* === ESPAÇAMENTOS === */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* === TRANSIÇÕES === */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* === FONTES === */
+    --font-primary: 'Georgia', serif;
+    --font-medieval: 'Cinzel', serif;
+    --font-decorative: 'Cinzel Decorative', serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 2rem;
+    
+    /* === Z-INDEX === */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}

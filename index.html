@@ -4,33 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dungeons & Souls Cards</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-        }
-        
-        .main-container {
-            height: 100vh;
-            width: 100%;
-            background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
-            border: 2px solid #8B4513;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-    </style>
+    <link rel="stylesheet" href="src/styles/main.css">
 </head>
 <body>
     <div class="main-container">
-        🎮 Container Principal - 100vh x 100% 🎮
+        <!-- Barra Superior com Informações do Jogo -->
+        <header class="game-header">
+            <div class="game-info">
+                <div class="info-item">
+                    <span class="info-label">Rodada</span>
+                    <span class="info-value">1</span>
+                </div>
+                
+                <div class="info-separator"></div>
+                
+                <div class="info-item">
+                    <span class="info-label">Turno</span>
+                    <span class="info-value">3</span>
+                </div>
+                
+                <div class="info-separator"></div>
+                
+                <div class="info-item active">
+                    <span class="info-label">Jogador</span>
+                    <span class="info-value">Alucard</span>
+                </div>
+                
+                <div class="info-separator"></div>
+                
+                <div class="info-item">
+                    <span class="info-label">Etapa</span>
+                    <span class="info-value">Ação</span>
+                </div>
+            </div>
+            
+            <div class="center-ornament">⚔️</div>
+        </header>
+
+        <!-- Área Principal do Jogo -->
+        <div class="game-area">
+            🎮 Área do Jogo - Layout será construído aos poucos 🎮
+        </div>
     </div>
 </body>
 </html>

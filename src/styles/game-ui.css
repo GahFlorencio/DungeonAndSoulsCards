@@ -1,0 +1,125 @@
+/* ============================================
+   GAME UI - Interface do jogo (barras, HUD)
+   ============================================ */
+
+/* === BARRA SUPERIOR DO JOGO === */
+.game-header {
+    width: 100%;
+    height: 80px;
+    background: rgba(128, 128, 128, 0.1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-xl);
+}
+
+/* Borda inferior com gradiente */
+.game-header::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--primary-gold) 20%, 
+        var(--secondary-gold) 50%, 
+        var(--primary-gold) 80%, 
+        transparent 100%);
+}
+
+/* === INFORMAÇÕES DO JOGO === */
+.game-info {
+    display: flex;
+    gap: var(--spacing-xl);
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    min-width: 100px;
+}
+
+.info-label {
+    font-family: var(--font-decorative);
+    font-size: var(--font-size-xs);
+    color: var(--primary-gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    text-shadow: var(--shadow-text);
+    opacity: 0.9;
+}
+
+.info-value {
+    font-family: var(--font-medieval);
+    font-size: var(--font-size-lg);
+    color: var(--light-text);
+    font-weight: 600;
+    text-shadow: var(--shadow-text);
+}
+
+/* === DESTAQUE PARA JOGADOR ATIVO === */
+.info-item.active .info-label {
+    color: var(--secondary-gold);
+    opacity: 1;
+}
+
+.info-item.active .info-value {
+    color: var(--secondary-gold);
+    animation: subtleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes subtleGlow {
+    0% { 
+        text-shadow: 
+            var(--shadow-text),
+            0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    100% { 
+        text-shadow: 
+            var(--shadow-text),
+            0 0 15px rgba(255, 215, 0, 0.5);
+    }
+}
+
+/* === SEPARADORES COM GRADIENTE === */
+.info-separator {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--primary-gold) 20%, 
+        var(--secondary-gold) 50%, 
+        var(--primary-gold) 80%, 
+        transparent 100%);
+    position: relative;
+    opacity: 0.6;
+}
+
+.info-separator::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, var(--secondary-gold), var(--primary-gold));
+    border-radius: 50%;
+}
+
+/* === ORNAMENTO CENTRAL SIMPLIFICADO === */
+.center-ornament {
+    font-size: var(--font-size-xl);
+    color: var(--primary-gold);
+    text-shadow: var(--shadow-text);
+    opacity: 0.8;
+}

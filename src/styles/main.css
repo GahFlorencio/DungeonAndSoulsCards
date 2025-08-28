@@ -1,0 +1,23 @@
+/* ============================================
+   MAIN STYLES - Arquivo principal de estilos
+   ============================================ */
+
+/* Importação das fontes Google */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@700&display=swap');
+
+/* Importação dos estilos base */
+@import 'variables.css';
+@import 'base.css';
+@import 'layout.css';
+@import 'components.css';
+@import 'game-ui.css';
+
+/* 
+  Ordem de importação:
+  1. variables.css - Variáveis CSS customizadas
+  2. base.css - Reset, estilos globais e base
+  3. layout.css - Containers, grids e utilitários de layout
+  4. components.css - Botões, cards, inputs e componentes reutilizáveis
+  5. game-ui.css - Interface do jogo (barras, HUD, informações)
+  6. Próximos arquivos específicos serão importados conforme necessário
+*/

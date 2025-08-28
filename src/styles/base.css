@@ -1,0 +1,44 @@
+/* ============================================
+   BASE STYLES - Reset e configurações globais
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+    overflow: hidden; /* Evita scroll desnecessário */
+}
+
+html {
+    font-size: 16px; /* Base para rem */
+}
+
+/* Remove outline padrão, mas mantém acessibilidade */
+*:focus {
+    outline: 2px solid #DAA520;
+    outline-offset: 2px;
+}
+
+/* Scrollbar personalizada para WebKit */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(139, 69, 19, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8B4513, #654321);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #DAA520, #8B4513);
+}
