@@ -117,21 +117,28 @@
     background: rgba(218, 165, 32, 0.8);
 }
 
-/* === ÁREA DAS CARTAS DO OPONENTE === */
+/* === ÁREA DAS CARTAS DO OPONENTE (REMOVIDA) === */
+/*
 .opponent-area {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--spacing-md) 0;
+    padding: var(--spacing-lg) 0;
     margin-bottom: var(--spacing-xl);
+    perspective: 1000px;
 }
 
 .opponent-hand {
     display: flex;
-    gap: var(--spacing-sm);
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    position: relative;
+    height: 220px;
+    width: 100%;
+    max-width: 800px;
+    margin-top: var(--spacing-lg);
 }
+*/
 
 /* === ÁREA CENTRAL (CAMPO DE BATALHA) === */
 .battlefield {
@@ -140,16 +147,22 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: var(--spacing-xl) 0;
+    padding: var(--spacing-xxl) 0;
     position: relative;
+    min-height: 200px;
+    margin-top: var(--spacing-lg);
 }
 
 .battlefield-info {
     color: var(--light-text);
     font-family: var(--font-medieval);
-    font-size: var(--font-size-lg);
+    font-size: calc(var(--font-size-lg) * 1.2);
     text-shadow: var(--shadow-text);
-    opacity: 0.7;
+    opacity: 0.8;
+    padding: var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(218, 165, 32, 0.3);
 }
 
 /* === ÁREA DAS CARTAS DO JOGADOR === */
@@ -157,15 +170,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--spacing-md) 0;
+    padding: var(--spacing-lg) 0;
     margin-top: var(--spacing-xl);
+    perspective: 1000px;
 }
 
 .player-hand {
     display: flex;
-    gap: var(--spacing-sm);
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    position: relative;
+    height: 320px;
+    width: 100%;
+    max-width: 900px;
 }
 
 /* === ESTILOS DAS CARTAS === */
@@ -206,62 +223,183 @@
     border-color: var(--primary-gold);
 }
 
-/* === CARTAS DO OPONENTE === */
+/* === CARTAS DO OPONENTE (REMOVIDAS) === */
+/*
 .opponent-card {
-    width: var(--opponent-card-width);
-    height: var(--opponent-card-height);
-    transform: rotateY(180deg);
-    background: 
-        linear-gradient(135deg, var(--primary-brown) 0%, var(--secondary-brown) 100%),
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            rgba(139, 69, 19, 0.1) 10px,
-            rgba(139, 69, 19, 0.1) 20px
-        );
+    width: calc(var(--opponent-card-width) * 1.5);
+    height: calc(var(--opponent-card-height) * 1.5);
+    background-image: url('/assets/images/cards/webp/card_back_1.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border-color: var(--dark-gold);
+    position: absolute;
+    transition: all 0.3s ease;
+    transform-origin: center bottom;
+    cursor: pointer;
+}
+
+Posicionamento arqueado das cartas - movido mais para baixo
+.opponent-card:nth-child(1) {
+    transform: translateX(-150px) translateY(50px) rotate(-25deg);
+    z-index: 1;
+}
+
+.opponent-card:nth-child(2) {
+    transform: translateX(-90px) translateY(35px) rotate(-15deg);
+    z-index: 2;
+}
+
+.opponent-card:nth-child(3) {
+    transform: translateX(-30px) translateY(25px) rotate(-5deg);
+    z-index: 3;
+}
+
+.opponent-card:nth-child(4) {
+    transform: translateX(30px) translateY(25px) rotate(5deg);
+    z-index: 4;
+}
+
+.opponent-card:nth-child(5) {
+    transform: translateX(90px) translateY(35px) rotate(15deg);
+    z-index: 5;
+}
+
+.opponent-card:nth-child(6) {
+    transform: translateX(150px) translateY(50px) rotate(25deg);
+    z-index: 6;
 }
 
 .opponent-card::after {
-    content: '🂠';
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotateY(180deg);
-    font-size: 2.6rem; /* Aumentado de 2rem para 2.6rem (+30%) */
-    color: var(--dark-gold);
-    opacity: 0.6;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
 }
 
 .opponent-card:hover {
-    transform: rotateY(180deg) translateY(-7px);
+    transform: translateX(-150px) translateY(30px) rotate(-25deg) scale(1.05);
 }
+
+.opponent-card:nth-child(2):hover {
+    transform: translateX(-90px) translateY(15px) rotate(-15deg) scale(1.05);
+}
+
+.opponent-card:nth-child(3):hover {
+    transform: translateX(-30px) translateY(5px) rotate(-5deg) scale(1.05);
+}
+
+.opponent-card:nth-child(4):hover {
+    transform: translateX(30px) translateY(5px) rotate(5deg) scale(1.05);
+}
+
+.opponent-card:nth-child(5):hover {
+    transform: translateX(90px) translateY(15px) rotate(15deg) scale(1.05);
+}
+
+.opponent-card:nth-child(6):hover {
+    transform: translateX(150px) translateY(30px) rotate(25deg) scale(1.05);
+}
+
+.opponent-card:hover::after {
+    background: rgba(0, 0, 0, 0.2);
+}
+*/
 
 /* === CARTAS DO JOGADOR === */
 .player-card {
-    width: var(--player-card-width);
-    height: var(--player-card-height);
+    width: calc(var(--player-card-width) * 1.15);
+    height: calc(var(--player-card-height) * 1.15);
+    position: absolute;
+    transition: all 0.3s ease;
+    transform-origin: center bottom;
+    cursor: pointer;
 }
 
-/* Ajustes proporcionais para as cartas do jogador */
+/* Posicionamento arqueado das cartas do jogador */
+.player-card:nth-child(1) {
+    transform: translateX(-200px) translateY(0px) rotate(-20deg);
+    z-index: 1;
+}
+
+.player-card:nth-child(2) {
+    transform: translateX(-120px) translateY(-12px) rotate(-12deg);
+    z-index: 2;
+}
+
+.player-card:nth-child(3) {
+    transform: translateX(-40px) translateY(-22px) rotate(-4deg);
+    z-index: 3;
+}
+
+.player-card:nth-child(4) {
+    transform: translateX(40px) translateY(-22px) rotate(4deg);
+    z-index: 4;
+}
+
+.player-card:nth-child(5) {
+    transform: translateX(120px) translateY(-12px) rotate(12deg);
+    z-index: 5;
+}
+
+.player-card:nth-child(6) {
+    transform: translateX(200px) translateY(0px) rotate(20deg);
+    z-index: 6;
+}
+
+/* Efeitos hover para cartas do jogador */
+.player-card:hover {
+    transform: translateX(-200px) translateY(-40px) rotate(-20deg) scale(1.08);
+    z-index: 10;
+}
+
+.player-card:nth-child(2):hover {
+    transform: translateX(-120px) translateY(-50px) rotate(-12deg) scale(1.08);
+    z-index: 10;
+}
+
+.player-card:nth-child(3):hover {
+    transform: translateX(-40px) translateY(-60px) rotate(-4deg) scale(1.08);
+    z-index: 10;
+}
+
+.player-card:nth-child(4):hover {
+    transform: translateX(40px) translateY(-60px) rotate(4deg) scale(1.08);
+    z-index: 10;
+}
+
+.player-card:nth-child(5):hover {
+    transform: translateX(120px) translateY(-50px) rotate(12deg) scale(1.08);
+    z-index: 10;
+}
+
+.player-card:nth-child(6):hover {
+    transform: translateX(200px) translateY(-40px) rotate(20deg) scale(1.08);
+    z-index: 10;
+}
+
+/* Ajustes proporcionais para as cartas do jogador (7% maior) */
 .player-card .card-cost {
-    width: 32px; /* Aumentado de 28px para 32px (+15%) */
-    height: 32px; /* Aumentado de 28px para 32px (+15%) */
-    font-size: var(--font-size-lg); /* Aumentado */
+    width: calc(32px * 1.07); 
+    height: calc(32px * 1.07);
+    font-size: calc(var(--font-size-lg) * 1.07);
 }
 
 .player-card .card-name {
-    font-size: var(--font-size-lg); /* Aumentado */
+    font-size: calc(var(--font-size-lg) * 1.07);
 }
 
 .player-card .card-image {
-    font-size: 4.1rem; /* Aumentado de 3.6rem para 4.1rem (+15%) */
-    margin: var(--spacing-lg) 0; /* Aumentado */
+    font-size: calc(4.1rem * 1.07);
+    margin: calc(var(--spacing-lg) * 1.07) 0;
 }
 
 .player-card .card-stat {
-    font-size: var(--font-size-lg); /* Aumentado */
+    font-size: calc(var(--font-size-lg) * 1.07);
 }
 
 /* === CONTEÚDO DAS CARTAS DO JOGADOR === */
@@ -352,6 +490,7 @@
     .player-hand,
     .opponent-hand {
         gap: var(--spacing-xs);
+        height: 280px;
     }
     
     .game-logs {
@@ -362,6 +501,23 @@
     .turn-info {
         width: 280px;
     }
+    
+    .card-attributes {
+        padding: calc(var(--spacing-xs) * 0.8);
+    }
+    
+    .attribute {
+        font-size: calc(var(--font-size-xs) * 0.8);
+    }
+    
+    .attr-icon {
+        font-size: calc(var(--font-size-xs) * 0.7);
+    }
+    
+    .hero-attributes .attr-value {
+        padding: 1px 3px;
+        min-width: 18px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -371,7 +527,7 @@
     
     .card {
         width: 100px;
-        height: 140px;
+        height: var(--card-height-small);
     }
     
     .card-image {
@@ -392,6 +548,10 @@
         border-radius: var(--border-radius);
     }
     
+    .player-hand {
+        height: 250px;
+    }
+    
     .info-row {
         font-size: calc(var(--font-size-sm) * 0.95);
     }
@@ -400,4 +560,162 @@
     .info-value-turn {
         font-size: calc(var(--font-size-sm) * 0.95);
     }
+    
+    .card-type {
+        font-size: calc(var(--font-size-xs) * 0.75);
+        padding: 1px 4px;
+    }
+    
+    .card-attributes {
+        padding: calc(var(--spacing-xs) * 0.6);
+        margin-top: calc(var(--spacing-xs) * 0.8);
+    }
+    
+    .attribute {
+        font-size: calc(var(--font-size-xs) * 0.75);
+        margin-bottom: 1px;
+    }
+    
+    .attr-icon {
+        font-size: calc(var(--font-size-xs) * 0.6);
+        margin-right: 3px;
+    }
+    
+    .attr-label {
+        margin-right: 3px;
+    }
+    
+    .hero-attributes .attr-value {
+        padding: 1px 2px;
+        min-width: 16px;
+        font-size: calc(var(--font-size-xs) * 0.7);
+    }
+}
+
+/* === TIPOS DE CARTAS E SEUS ATRIBUTOS === */
+
+/* Tipo de carta no header */
+.card-type {
+    background: var(--primary-gold);
+    color: var(--primary-brown);
+    border-radius: var(--border-radius);
+    padding: 2px 6px;
+    font-family: var(--font-medieval);
+    font-size: calc(var(--font-size-xs) * 0.9);
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid var(--secondary-brown);
+}
+
+/* Container dos atributos */
+.card-attributes {
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(139, 69, 19, 0.2);
+}
+
+/* Atributo individual */
+.attribute {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+    font-size: calc(var(--font-size-xs) * 0.9);
+    font-family: var(--font-primary);
+}
+
+.attribute:last-child {
+    margin-bottom: 0;
+}
+
+.attr-icon {
+    margin-right: 4px;
+    font-size: calc(var(--font-size-xs) * 0.8);
+}
+
+.attr-label {
+    font-weight: 600;
+    color: var(--primary-brown);
+    margin-right: 4px;
+}
+
+.attr-value {
+    font-weight: bold;
+    color: var(--primary-brown);
+    margin-left: auto;
+}
+
+/* === ESTILOS ESPECÍFICOS PARA CARTAS DE HERÓI === */
+.hero-card {
+    border-color: var(--primary-gold);
+}
+
+.hero-card .card-type {
+    background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+}
+
+.hero-attributes {
+    background: rgba(218, 165, 32, 0.1);
+    border-color: rgba(218, 165, 32, 0.3);
+}
+
+.hero-attributes .attribute {
+    justify-content: space-between;
+}
+
+.hero-attributes .attr-value {
+    background: var(--primary-gold);
+    color: var(--primary-brown);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+    margin-left: 0;
+}
+
+/* === ESTILOS ESPECÍFICOS PARA CARTAS DE EQUIPAMENTO === */
+.equipment-card {
+    border-color: #87CEEB;
+}
+
+.equipment-card .card-type {
+    background: linear-gradient(135deg, #87CEEB, #4682B4);
+    color: white;
+}
+
+.equipment-attributes {
+    background: rgba(135, 206, 235, 0.1);
+    border-color: rgba(135, 206, 235, 0.3);
+}
+
+.equipment-attributes .attr-value {
+    color: #4682B4;
+    font-weight: bold;
+}
+
+/* === ESTILOS ESPECÍFICOS PARA CARTAS DE TERRENO === */
+.terrain-card {
+    border-color: #228B22;
+}
+
+.terrain-card .card-type {
+    background: linear-gradient(135deg, #228B22, #32CD32);
+    color: white;
+}
+
+.terrain-attributes {
+    background: rgba(34, 139, 34, 0.1);
+    border-color: rgba(34, 139, 34, 0.3);
+}
+
+.terrain-attributes .buff .attr-value {
+    color: #228B22;
+    font-weight: bold;
+}
+
+.terrain-attributes .debuff .attr-value {
+    color: #DC143C;
+    font-weight: bold;
 }
