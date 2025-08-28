@@ -3,124 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ Dungeon & Souls Cards - Batalha Medieval</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/demo.css">
-    <link rel="stylesheet" href="styles/game-layout.css">
+    <title>Dungeons & Souls Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .main-container {
+            height: 100vh;
+            width: 100%;
+            background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
+            border: 2px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+    </style>
 </head>
-<body class="game-body">
-    <!-- Navbar -->
-    <nav class="game-navbar">
-        <div class="navbar-content">
-            <h1 class="game-title">⚔️ Dungeon & Souls Cards ⚔️</h1>
-        </div>
-    </nav>
-
-    <!-- Layout principal -->
-    <div class="game-layout">
-        <!-- Sidebar -->
-        <aside class="game-sidebar">
-            <!-- Seção de Status do Jogo -->
-            <div class="sidebar-section game-status-section">
-                <h3 class="section-title">🏛️ Status do Jogo</h3>
-                <div class="status-grid">
-                    <div class="status-item">
-                        <span class="status-label">Rodada:</span>
-                        <span id="currentRound" class="status-value">1/3</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Turno:</span>
-                        <span id="currentTurn" class="status-value">1</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Iniciativa:</span>
-                        <span id="whoStarts" class="status-value">-</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Vez de:</span>
-                        <span id="currentPlayer" class="status-value">Jogador</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Vitórias:</span>
-                        <span id="scoreDisplay" class="status-value">0 - 0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Seção de Battle Log -->
-            <div class="sidebar-section battle-log-section">
-                <h3 class="section-title">⚔️ Battle Log</h3>
-                <div id="battleLog" class="battle-log">
-                    <div class="log-entry system">🎮 Jogo iniciado - Preparando batalha...</div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Área principal do jogo -->
-        <main class="game-main">
-            <!-- Cartas do Oponente -->
-            <div class="opponent-area" id="opponentArea">
-                <!-- Cartas serão inseridas aqui dinamicamente -->
-            </div>
-
-            <!-- Área Central de Batalha -->
-            <div class="battle-area" id="battleArea">
-                <div class="battle-card-slot" id="playerBattleSlot"></div>
-                <div class="vs-indicator">⚔️ VS ⚔️</div>
-                <div class="battle-card-slot" id="opponentBattleSlot"></div>
-            </div>
-
-            <!-- Cartas do Jogador -->
-            <div class="player-area" id="playerArea">
-                <!-- Cartas serão inseridas aqui dinamicamente -->
-            </div>
-
-            <!-- Roda de ações para seleção de atributos -->
-            <div id="actionWheel" class="action-wheel hidden">
-                <div class="wheel-center">
-                    <span class="wheel-title">Escolha o Atributo</span>
-                </div>
-                <button class="wheel-option" data-attribute="forca">
-                    <span class="attribute-icon">💪</span>
-                    <span class="attribute-name">Força</span>
-                </button>
-                <button class="wheel-option" data-attribute="destreza">
-                    <span class="attribute-icon">🏹</span>
-                    <span class="attribute-name">Destreza</span>
-                </button>
-                <button class="wheel-option" data-attribute="constituicao">
-                    <span class="attribute-icon">🛡️</span>
-                    <span class="attribute-name">Constituição</span>
-                </button>
-                <button class="wheel-option" data-attribute="inteligencia">
-                    <span class="attribute-icon">📚</span>
-                    <span class="attribute-name">Inteligência</span>
-                </button>
-            </div>
-
-            <!-- Botão de batalha -->
-            <button id="battleButton" class="battle-btn hidden">⚔️ INICIAR BATALHA ⚔️</button>
-
-            <!-- Área de animação dos dados -->
-            <div id="diceAnimation" class="dice-animation hidden">
-                <div class="dice-container">
-                    <div class="dice" id="dice1">🎲</div>
-                    <div class="dice" id="dice2">🎲</div>
-                </div>
-                <div class="dice-result" id="diceResult">Rolando dados...</div>
-            </div>
-        </main>
+<body>
+    <div class="main-container">
+        🎮 Container Principal - 100vh x 100% 🎮
     </div>
-
-    <!-- Scripts -->
-    <script src="src/GameState.js"></script>
-    <script src="src/CardManager.js"></script>
-    <script src="src/CardRenderer.js"></script>
-    <script src="src/UIManager.js"></script>
-    <script src="src/GameManager.js"></script>
-    <script src="src/main.js"></script>
 </body>
 </html>
