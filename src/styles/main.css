@@ -11,6 +11,7 @@
 @import 'layout.css';
 @import 'components.css';
 @import 'game-ui.css';
+@import 'game-board.css';
 
 /* 
   Ordem de importação:
@@ -19,5 +20,6 @@
   3. layout.css - Containers, grids e utilitários de layout
   4. components.css - Botões, cards, inputs e componentes reutilizáveis
   5. game-ui.css - Interface do jogo (barras, HUD, informações)
-  6. Próximos arquivos específicos serão importados conforme necessário
+  6. game-board.css - Tabuleiro, cartas e áreas de jogo
+  7. Próximos arquivos específicos serão importados conforme necessário
 */

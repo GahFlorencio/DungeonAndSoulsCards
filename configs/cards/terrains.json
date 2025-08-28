@@ -1,32 +1,32 @@
 {
-  "terrenos": [
+  "terrains": [
     {
       "id": 1,
-      "nome": "Floresta",
-      "bonus": {"destreza": 1},
-      "punicao": {"forca": -1},
-      "descricao": "Densa mata onde as sombras dançam e apenas os ágeis prosperam entre as árvores ancestrais."
+      "name": "Floresta",
+      "buff": {"dex": 1},
+      "debuff": {"str": -1},
+      "description": "Densa mata onde as sombras dançam e apenas os ágeis prosperam entre as árvores ancestrais."
     },
     {
       "id": 2,
-      "nome": "Montanha",
-      "bonus": {"forca": 1},
-      "punicao": {"destreza": -1},
-      "descricao": "Picos rochosos onde os ventos gélidos fortalecem os corpos, mas entorpecem os movimentos."
+      "name": "Montanha",
+      "buff": {"str": 1},
+      "debuff": {"dex": -1},
+      "description": "Picos rochosos onde os ventos gélidos fortalecem os corpos, mas entorpecem os movimentos."
     },
     {
       "id": 3,
-      "nome": "Pântano",
-      "bonus": {"constituicao": 1},
-      "punicao": {"inteligencia": -1},
-      "descricao": "Terras alagadiças repletas de miasmas que endurecem o corpo, mas nublam a mente."
+      "name": "Pântano",
+      "buff": {"cons": 1},
+      "debuff": {"int": -1},
+      "description": "Terras alagadiças repletas de miasmas que endurecem o corpo, mas nublam a mente."
     },
     {
       "id": 4,
-      "nome": "Deserto",
-      "bonus": {"destreza": 1},
-      "punicao": {"constituicao": -1},
-      "descricao": "Areias escaldantes que aguçam os reflexos dos sobreviventes, mas drenam sua vitalidade."
+      "name": "Deserto",
+      "buff": {"dex": 1},
+      "debuff": {"cons": -1},
+      "description": "Areias escaldantes que aguçam os reflexos dos sobreviventes, mas drenam sua vitalidade."
     }
   ]
 }

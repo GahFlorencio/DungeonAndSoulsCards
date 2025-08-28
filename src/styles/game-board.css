@@ -1,0 +1,403 @@
+/* ============================================
+   GAME BOARD - Tabuleiro e cartas do jogo
+   ============================================ */
+
+/* === ÁREA PRINCIPAL DO TABULEIRO === */
+.game-board {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg);
+    background: var(--bg-medieval);
+    position: relative;
+}
+
+/* === INFORMAÇÕES DO TURNO (TOPO) === */
+.turn-info {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 320px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    z-index: 10;
+}
+
+/* === SEÇÃO DE LOGS DA PARTIDA (EMBAIXO) === */
+.game-logs {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 320px;
+    height: 420px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: calc(var(--spacing-xs) * 1.2);
+    font-size: calc(var(--font-size-sm) * 1.1);
+    padding: var(--spacing-xs) 0;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-label-turn {
+    color: var(--primary-gold);
+    font-family: var(--font-medieval);
+    font-weight: 600;
+    font-size: calc(var(--font-size-sm) * 1.1);
+}
+
+.info-value-turn {
+    color: white;
+    font-family: var(--font-primary);
+    font-size: calc(var(--font-size-sm) * 1.1);
+    font-weight: 500;
+}
+
+.logs-header {
+    color: var(--primary-gold);
+    font-family: var(--font-medieval);
+    font-size: calc(var(--font-size-sm) * 1.1);
+    text-align: left;
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.logs-container {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.log-entry {
+    color: white;
+    font-family: var(--font-primary);
+    font-size: calc(var(--font-size-sm) * 1.0);
+    line-height: 1.5;
+    margin-bottom: calc(var(--spacing-xs) * 1.2);
+    padding: var(--spacing-xs) 0;
+    word-wrap: break-word;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.log-entry:last-child {
+    margin-bottom: 0;
+}
+
+/* Scrollbar personalizada para logs */
+.logs-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.logs-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.logs-container::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.6);
+    border-radius: 2px;
+}
+
+.logs-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.8);
+}
+
+/* === ÁREA DAS CARTAS DO OPONENTE === */
+.opponent-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-xl);
+}
+
+.opponent-hand {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    align-items: center;
+}
+
+/* === ÁREA CENTRAL (CAMPO DE BATALHA) === */
+.battlefield {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-xl) 0;
+    position: relative;
+}
+
+.battlefield-info {
+    color: var(--light-text);
+    font-family: var(--font-medieval);
+    font-size: var(--font-size-lg);
+    text-shadow: var(--shadow-text);
+    opacity: 0.7;
+}
+
+/* === ÁREA DAS CARTAS DO JOGADOR === */
+.player-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+    margin-top: var(--spacing-xl);
+}
+
+.player-hand {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    align-items: center;
+}
+
+/* === ESTILOS DAS CARTAS === */
+.card {
+    width: var(--card-width);
+    height: var(--card-height);
+    background: var(--bg-card);
+    border: 2px solid var(--primary-brown);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-card);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(218, 165, 32, 0.1) 0%, 
+        transparent 50%, 
+        rgba(139, 69, 19, 0.1) 100%);
+    pointer-events: none;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--primary-gold);
+}
+
+/* === CARTAS DO OPONENTE === */
+.opponent-card {
+    width: var(--opponent-card-width);
+    height: var(--opponent-card-height);
+    transform: rotateY(180deg);
+    background: 
+        linear-gradient(135deg, var(--primary-brown) 0%, var(--secondary-brown) 100%),
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(139, 69, 19, 0.1) 10px,
+            rgba(139, 69, 19, 0.1) 20px
+        );
+    border-color: var(--dark-gold);
+}
+
+.opponent-card::after {
+    content: '🂠';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateY(180deg);
+    font-size: 2.6rem; /* Aumentado de 2rem para 2.6rem (+30%) */
+    color: var(--dark-gold);
+    opacity: 0.6;
+}
+
+.opponent-card:hover {
+    transform: rotateY(180deg) translateY(-7px);
+}
+
+/* === CARTAS DO JOGADOR === */
+.player-card {
+    width: var(--player-card-width);
+    height: var(--player-card-height);
+}
+
+/* Ajustes proporcionais para as cartas do jogador */
+.player-card .card-cost {
+    width: 32px; /* Aumentado de 28px para 32px (+15%) */
+    height: 32px; /* Aumentado de 28px para 32px (+15%) */
+    font-size: var(--font-size-lg); /* Aumentado */
+}
+
+.player-card .card-name {
+    font-size: var(--font-size-lg); /* Aumentado */
+}
+
+.player-card .card-image {
+    font-size: 4.1rem; /* Aumentado de 3.6rem para 4.1rem (+15%) */
+    margin: var(--spacing-lg) 0; /* Aumentado */
+}
+
+.player-card .card-stat {
+    font-size: var(--font-size-lg); /* Aumentado */
+}
+
+/* === CONTEÚDO DAS CARTAS DO JOGADOR === */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-cost {
+    background: var(--primary-gold);
+    color: var(--dark-brown);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card-name {
+    font-family: var(--font-medieval);
+    font-size: var(--font-size-sm);
+    color: var(--primary-brown);
+    font-weight: 600;
+    text-align: center;
+    flex: 1;
+    margin: 0 var(--spacing-xs);
+}
+
+.card-image {
+    text-align: center;
+    font-size: 3rem;
+    margin: var(--spacing-sm) 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.card-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-xs);
+}
+
+.card-stat {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-medieval);
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    color: var(--primary-brown);
+}
+
+.attack::before {
+    content: '⚔️';
+    margin-right: 2px;
+    font-size: var(--font-size-xs);
+}
+
+.health::before {
+    content: '❤️';
+    margin-right: 2px;
+    font-size: var(--font-size-xs);
+}
+
+/* === DIVISOR ENTRE ÁREAS === */
+.area-divider {
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--primary-gold) 50%, 
+        transparent 100%);
+    margin: var(--spacing-md) 0;
+    opacity: 0.5;
+}
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 1024px) {
+    .card {
+        width: var(--card-width-small);
+        height: var(--card-height-small);
+    }
+    
+    .player-hand,
+    .opponent-hand {
+        gap: var(--spacing-xs);
+    }
+    
+    .game-logs {
+        width: 280px;
+        height: 380px;
+    }
+    
+    .turn-info {
+        width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-board {
+        padding: var(--spacing-md);
+    }
+    
+    .card {
+        width: 100px;
+        height: 140px;
+    }
+    
+    .card-image {
+        font-size: 2rem;
+    }
+    
+    .game-logs {
+        position: static;
+        width: 100%;
+        height: 280px;
+        margin-top: var(--spacing-md);
+    }
+    
+    .turn-info {
+        position: static;
+        width: 100%;
+        margin-bottom: var(--spacing-sm);
+        border-radius: var(--border-radius);
+    }
+    
+    .info-row {
+        font-size: calc(var(--font-size-sm) * 0.95);
+    }
+    
+    .info-label-turn,
+    .info-value-turn {
+        font-size: calc(var(--font-size-sm) * 0.95);
+    }
+}

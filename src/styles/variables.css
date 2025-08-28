@@ -47,6 +47,10 @@
     --card-height: 190px;
     --card-width-small: 120px;
     --card-height-small: 160px;
+    --player-card-width: 193px; /* 168px + 15% = 193px */
+    --player-card-height: 262px; /* 228px + 15% = 262px */
+    --opponent-card-width: 130px; /* 100px + 30% = 130px */
+    --opponent-card-height: 182px; /* 140px + 30% = 182px */
     
     /* === ESPAÇAMENTOS === */
     --spacing-xs: 4px;

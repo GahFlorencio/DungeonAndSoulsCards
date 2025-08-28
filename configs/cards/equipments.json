@@ -1,34 +1,34 @@
 {
-  "equipamentos": [
+  "equipments": [
     { 
       "id": 1,
-      "nome": "Elmo do Cavaleiro Negro", 
-      "bonus": {"forca": 2},
-      "descricao": "Forjado nas trevas do abismo, este elmo concede força sobrenatural a seu portador."
+      "name": "Elmo do Cavaleiro Negro", 
+      "buff": {"str": 2},
+      "description": "Forjado nas trevas do abismo, este elmo concede força sobrenatural a seu portador."
     },
     {  
       "id": 2,
-      "nome": "Botas Ágeis", 
-      "bonus": {"destreza": 2},
-      "descricao": "Botas encantadas que fazem o usuário dançar entre as lâminas inimigas como o vento."
+      "name": "Botas Ágeis", 
+      "buff": {"dex": 2},
+      "description": "Botas encantadas que fazem o usuário dançar entre as lâminas inimigas como o vento."
     },
     {
       "id": 3,
-      "nome": "Amuleto do Sábio", 
-      "bonus": {"inteligencia": 2},
-      "descricao": "Um cristal ancestral que sussurra os segredos arcanos aos ouvidos de seu dono."
+      "name": "Amuleto do Sábio", 
+      "buff": {"int": 2},
+      "description": "Um cristal ancestral que sussurra os segredos arcanos aos ouvidos de seu dono."
     },
     {
       "id": 4,
-      "nome": "Cinto da Vitalidade", 
-      "bonus": {"constituicao": 2},
-      "descricao": "Tecido com fibras de dragão, restaura a energia vital e fortalece o corpo."
+      "name": "Cinto da Vitalidade", 
+      "buff": {"cons": 2},
+      "description": "Tecido com fibras de dragão, restaura a energia vital e fortalece o corpo."
     },
     {
       "id": 5,
-      "nome": "Escudo Reforçado", 
-      "bonus": {"defesa": 2},
-      "descricao": "Escudo lendário que já protegeu reis, capaz de repelir até mesmo magia negra."
+      "name": "Escudo Reforçado", 
+      "buff": {"def": 2},
+      "description": "Escudo lendário que já protegeu reis, capaz de repelir até mesmo magia negra."
     }
   ]
 }
