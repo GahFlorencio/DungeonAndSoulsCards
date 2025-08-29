@@ -21,7 +21,7 @@
     {
       "id": 4,
       "name": "Cinto da Vitalidade", 
-      "buff": {"cons": 2},
+      "buff": {"con": 2},
       "description": "Tecido com fibras de dragão, restaura a energia vital e fortalece o corpo."
     },
     {
