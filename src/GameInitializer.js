@@ -25,21 +25,31 @@ class GameInitializer {
             // 2. Carrega os dados dos equipamentos
             await window.equipmentManager.loadEquipments();
 
-            // 3. Randomiza os heróis para a partida
+            // 3. Carrega os dados dos terrenos
+            await window.terrainManager.loadTerrains();
+
+            // 4. Randomiza os heróis para a partida
             const selectedHeroes = window.heroManager.randomizeHeroesForGame();
             console.log('⚔️ Heróis selecionados:', selectedHeroes.map(h => h.name));
 
-            // 4. Randomiza os equipamentos para a partida
+            // 5. Randomiza os equipamentos para a partida
             const selectedEquipments = window.equipmentManager.randomizeEquipmentsForGame(2);
             console.log('🛡️ Equipamentos selecionados:', selectedEquipments.map(e => e.name));
 
-            // 5. Renderiza as cartas de heróis na interface
+            // 6. Randomiza o terreno para a partida
+            const selectedTerrain = window.terrainManager.randomizeTerrainForGame();
+            console.log('🏔️ Terreno selecionado:', selectedTerrain ? selectedTerrain.name : 'Nenhum');
+
+            // 7. Renderiza as cartas de heróis na interface
             window.heroCardRenderer.updateHeroCardsInDOM();
 
-            // 6. Renderiza as cartas de equipamentos na interface
+            // 8. Renderiza as cartas de equipamentos na interface
             window.equipmentCardRenderer.updateEquipmentCardsInDOM();
 
-            // 7. Adiciona event listeners para interações
+            // 9. Renderiza a carta de terreno na interface
+            window.terrainCardRenderer.updateTerrainCardInDOM();
+
+            // 10. Adiciona event listeners para interações
             this.addEventListeners();
 
             this.isInitialized = true;
@@ -66,6 +76,12 @@ class GameInitializer {
             if (equipmentCard) {
                 this.handleEquipmentCardClick(equipmentCard);
             }
+
+            // Event listener para cliques nas cartas de terreno
+            const terrainCard = event.target.closest('.terrain-card');
+            if (terrainCard) {
+                this.handleTerrainCardClick(terrainCard);
+            }
         });
 
         // Event listener para hover nas cartas
@@ -78,6 +94,11 @@ class GameInitializer {
             const equipmentCard = event.target.closest('.equipment-card');
             if (equipmentCard) {
                 this.handleEquipmentCardHover(equipmentCard);
+            }
+
+            const terrainCard = event.target.closest('.terrain-card');
+            if (terrainCard) {
+                this.handleTerrainCardHover(terrainCard);
             }
         });
 
@@ -143,9 +164,14 @@ class GameInitializer {
         const selectedEquipments = window.equipmentManager.randomizeEquipmentsForGame(2);
         console.log('🛡️ Novos equipamentos selecionados:', selectedEquipments.map(e => e.name));
         
+        // Randomiza novo terreno
+        const selectedTerrain = window.terrainManager.randomizeTerrainForGame();
+        console.log('🏔️ Novo terreno selecionado:', selectedTerrain ? selectedTerrain.name : 'Nenhum');
+        
         // Atualiza a interface
         window.heroCardRenderer.updateHeroCardsInDOM();
         window.equipmentCardRenderer.updateEquipmentCardsInDOM();
+        window.terrainCardRenderer.updateTerrainCardInDOM();
         
         console.log('✅ Jogo reiniciado!');
     }
@@ -239,6 +265,53 @@ class GameInitializer {
         // - Atualizações nos atributos do herói
         // - Logs de partida
     }
+
+    /**
+     * Manipula cliques nas cartas de terreno
+     */
+    handleTerrainCardClick(terrainCard) {
+        const terrainId = parseInt(terrainCard.dataset.terrainId);
+        const terrain = window.terrainManager.getTerrainById(terrainId);
+        
+        console.log('🏔️ Terreno clicado:', terrain.name);
+        
+        // Adiciona feedback visual
+        terrainCard.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            terrainCard.style.transform = '';
+        }, 150);
+
+        // Mostra informações do terreno
+        this.showTerrainInfo(terrain);
+    }
+
+    /**
+     * Manipula hover nas cartas de terreno
+     */
+    handleTerrainCardHover(terrainCard) {
+        const terrainId = parseInt(terrainCard.dataset.terrainId);
+        const terrain = window.terrainManager.getTerrainById(terrainId);
+        
+        // Atualiza informações de hover
+        console.log('👁️ Visualizando terreno:', terrain.name);
+    }
+
+    /**
+     * Mostra informações detalhadas do terreno
+     */
+    showTerrainInfo(terrain) {
+        const attributes = window.terrainManager.getTerrainAttributes(terrain);
+        
+        console.log(`🌍 Terreno ativo: ${terrain.name}`);
+        console.log(`📈 Buff: +${attributes.buff.value} ${attributes.buff.name}`);
+        console.log(`📉 Debuff: -${attributes.debuff.value} ${attributes.debuff.name}`);
+        console.log(`📜 Descrição: ${terrain.description}`);
+        
+        // Aqui você pode adicionar:
+        // - Modal com informações detalhadas
+        // - Animações de destaque
+        // - Logs de partida
+    }
 }
 
 // Instância global do inicializador
@@ -254,6 +327,14 @@ window.testHeroCards = () => {
     console.log('🔄 Testando cartas de herói...');
     window.gameInitializer.testImageLoading();
     window.heroCardRenderer.updateHeroCardsInDOM();
+};
+
+// Função global para testar cartas de terreno (pode ser chamada do console)
+window.testTerrainCards = () => {
+    console.log('🔄 Testando cartas de terreno...');
+    const terrain = window.terrainManager.getSelectedTerrain();
+    console.log('🏔️ Terreno atual:', terrain);
+    window.terrainCardRenderer.updateTerrainCardInDOM();
 };
 
 // Função global para reiniciar o jogo (pode ser chamada do console para testes)

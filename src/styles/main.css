@@ -14,6 +14,7 @@
 @import 'game-board.css';
 @import 'hero-cards.css';
 @import 'equipment-cards.css';
+@import 'terrain-cards.css';
 
 /* 
   Ordem de importação:

@@ -1,0 +1,311 @@
+/* ============================================
+   TERRAIN CARDS - Estilos específicos para cartas de terreno
+   ============================================ */
+
+/* === ESTRUTURA DA CARTA DE TERRENO === */
+.terrain-card {
+    border: 3px solid var(--primary-gold);
+    border-radius: var(--border-radius-large);
+    overflow: hidden;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(218, 165, 32, 0.3);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    /* A imagem de fundo será aplicada inline via JavaScript */
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    /* Cor de fallback para debug */
+    background-color: #1a0f0a;
+}
+
+.terrain-card:hover {
+    border-color: rgba(218, 165, 32, 0.9);
+    box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 2px rgba(218, 165, 32, 0.6),
+        0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+/* === OVERLAY COM NOME DO TERRENO === */
+.terrain-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(139, 95, 61, 0.85); /* Marrom claro igual aos heróis */
+    padding: var(--spacing-sm) var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    border-bottom: 2px solid rgba(218, 165, 32, 0.6); /* Dourado igual outras cartas */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    z-index: 2;
+}
+
+.terrain-name {
+    color: white;
+    font-family: var(--font-medieval);
+    font-size: calc(var(--font-size-md) * 1.1);
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    line-height: 1.2;
+    max-width: 100%;
+    word-wrap: break-word;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* === ÁREA DOS ATRIBUTOS (REDUZIDO 30% DO TAMANHO ANTERIOR) === */
+.terrain-card .terrain-attributes {
+    position: absolute;
+    bottom: 2%; /* Desceu de 10% para 2% - quase na borda */
+    left: 0;
+    right: 0;
+    height: 35%; /* Reduzido de 40% para 35% */
+    background: transparent !important;
+    border: none !important;
+    padding: calc(var(--spacing-xs) * 0.7); /* Reduzido de 1 para 0.7 */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 0px;
+    z-index: 3;
+}
+
+.terrain-card .terrain-attributes .attribute {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px; /* Aumentado para acomodar o layout grid */
+    padding: 6px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    transition: all 0.2s ease;
+    position: relative;
+    width: 100%;
+    max-width: 110px; /* Aumentado para acomodar o layout */
+    flex: 1;
+}
+
+.terrain-card .terrain-attributes .attribute:hover {
+    transform: scale(1.05);
+}
+
+.terrain-card .attr-icon-container {
+    position: relative;
+    width: 100%; /* Ocupa toda a largura do container */
+    height: 60px; /* Altura fixa para o grid superior */
+    display: grid;
+    grid-template-columns: 56px 1fr; /* Grid: ícone fixo + espaço flexível para valor */
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    padding: 0 4px; /* Pequeno padding para não colar nas bordas */
+}
+
+.terrain-card .attr-icon-image {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9));
+    transition: all 0.2s ease;
+    grid-column: 1; /* Primeira coluna do grid */
+    justify-self: center; /* Centraliza o ícone na sua coluna */
+}
+
+.terrain-card .terrain-attributes .attribute:hover .attr-icon-image {
+    filter: drop-shadow(0 3px 8px rgba(255, 255, 255, 0.4)); /* Reduzida a sombra */
+    transform: scale(1.1);
+}
+
+.terrain-card .terrain-attributes .attr-value {
+    position: relative; /* Mudou de absolute para relative */
+    top: auto;
+    right: auto;
+    transform: none;
+    font-family: var(--font-medieval);
+    font-size: calc(var(--font-size-lg) * 1.4);
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0 0 4px rgba(0, 0, 0, 0.8);
+    background: none;
+    border: none;
+    border-radius: 0;
+    min-width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-column: 2; /* Segunda coluna do grid */
+    z-index: 4;
+}
+
+/* Labels dos atributos */
+.terrain-card .terrain-attributes .attr-label {
+    position: relative; /* Mudou de absolute para relative */
+    bottom: auto;
+    left: auto;
+    transform: none;
+    font-family: var(--font-medieval);
+    font-size: calc(var(--font-size-sm) * 1.1);
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-align: center; /* Centraliza o texto */
+    width: 100%; /* Ocupa toda a largura do container */
+    margin-top: 4px; /* Pequeno espaçamento do grid superior */
+    z-index: 4;
+}
+
+/* === ANIMAÇÕES === */
+@keyframes terrainCardAppear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.terrain-card {
+    animation: terrainCardAppear 0.8s ease-out;
+    animation-delay: 0.8s; /* Aparece após heróis e equipamentos */
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+/* === ESTADOS DE CARREGAMENTO DE IMAGEM === */
+.terrain-card.image-loaded {
+    opacity: 1;
+}
+
+.terrain-card.image-fallback {
+    border-color: rgba(218, 165, 32, 0.5);
+}
+
+.terrain-card.image-fallback::after {
+    content: '🏔️';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    opacity: 0.3;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 768px) {
+    .terrain-name {
+        font-size: var(--font-size-sm);
+    }
+    
+    .terrain-card .terrain-attributes {
+        bottom: 1%; /* Desceu também no mobile - quase na borda */
+    }
+    
+    .terrain-card .terrain-attributes .attribute {
+        min-width: 70px; /* Ajustado para o novo layout */
+        max-width: 90px;
+        padding: 4px;
+    }
+    
+    .terrain-card .attr-icon-container {
+        height: 45px; /* Reduzido para mobile */
+        grid-template-columns: 42px 1fr; /* Grid menor para mobile */
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+    
+    .terrain-card .attr-icon-image {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .terrain-card .terrain-attributes .attr-value {
+        font-size: calc(var(--font-size-md) * 1.1);
+        text-shadow: 
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000,
+            0 0 3px rgba(0, 0, 0, 0.8);
+    }
+    
+    .terrain-card .terrain-attributes .attr-label {
+        font-size: calc(var(--font-size-xs) * 1);
+        letter-spacing: 0.6px;
+        margin-top: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .terrain-card .terrain-attributes {
+        height: 25%;
+        bottom: 1%; /* Desceu também no mobile pequeno - quase na borda */
+        padding: calc(var(--spacing-xs) * 0.4);
+    }
+    
+    .terrain-card .terrain-attributes .attribute {
+        min-width: 60px; /* Ajustado para o novo layout */
+        max-width: 75px;
+        padding: 3px;
+    }
+    
+    .terrain-card .attr-icon-container {
+        height: 35px; /* Menor ainda para mobile pequeno */
+        grid-template-columns: 32px 1fr; /* Grid ainda menor */
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+    
+    .terrain-card .attr-icon-image {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .terrain-card .terrain-attributes .attr-value {
+        font-size: calc(var(--font-size-sm) * 1);
+        text-shadow: 
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+    }
+    
+    .terrain-card .terrain-attributes .attr-label {
+        font-size: calc(var(--font-size-xs) * 0.8);
+        letter-spacing: 0.4px;
+        margin-top: 2px;
+    }
+}

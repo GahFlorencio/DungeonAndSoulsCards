@@ -17,7 +17,7 @@
     {
       "id": 3,
       "name": "Pântano",
-      "buff": {"cons": 1},
+      "buff": {"con": 1},
       "debuff": {"int": -1},
       "description": "Terras alagadiças repletas de miasmas que endurecem o corpo, mas nublam a mente."
     },
@@ -25,7 +25,7 @@
       "id": 4,
       "name": "Deserto",
       "buff": {"dex": 1},
-      "debuff": {"cons": -1},
+      "debuff": {"con": -1},
       "description": "Areias escaldantes que aguçam os reflexos dos sobreviventes, mas drenam sua vitalidade."
     }
   ]
