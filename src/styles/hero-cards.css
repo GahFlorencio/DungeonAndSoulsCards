@@ -2,9 +2,8 @@
    HERO CARDS - Estilos específicos para cartas de heróis
    ============================================ */
 
-/* === ESTRUTURA DA CARTA DE HERÓI === */
+/* === IMAGEM DE FUNDO DO HERÓI (agora aplicada diretamente na carta) === */
 .hero-card {
-    background: transparent !important;
     border: 3px solid var(--primary-gold);
     border-radius: var(--border-radius-large);
     overflow: hidden;
@@ -21,6 +20,12 @@
     display: flex;
     flex-direction: column;
     padding: 0 !important;
+    /* A imagem de fundo será aplicada inline via JavaScript */
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    /* Cor de fallback para debug */
+    background-color: #1a0f0a;
 }
 
 .hero-card:hover {
@@ -33,22 +38,14 @@
     /* O transform será controlado pelas regras de posicionamento existentes */
 }
 
-/* === IMAGEM DE FUNDO DO HERÓI === */
-.hero-card-image {
-    width: 100%;
-    height: 70%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-}
+/* === OVERLAY COM NOME DO HERÓI === */
 
 .hero-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     background: rgba(139, 95, 61, 0.85); /* Marrom claro translúcido */
-    width: 100%;
     padding: var(--spacing-sm) var(--spacing-xs);
     display: flex;
     align-items: center;
@@ -56,6 +53,7 @@
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     border-bottom: 2px solid rgba(218, 165, 32, 0.6);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    z-index: 2;
 }
 
 .hero-name {
@@ -79,21 +77,20 @@
 
 /* === ÁREA DOS ATRIBUTOS === */
 .hero-card .hero-attributes {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 30%;
-    background: linear-gradient(
-        135deg,
-        rgba(40, 30, 20, 0.95) 0%,
-        rgba(60, 45, 30, 0.95) 50%,
-        rgba(40, 30, 20, 0.95) 100%
-    );
-    backdrop-filter: blur(5px);
-    border-top: 2px solid var(--primary-gold);
+    background: transparent !important;
+    border: none !important;
     padding: calc(var(--spacing-xs) * 0.8);
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2px;
+    align-items: flex-end;
+    gap: 0px; /* Removido espaçamento entre atributos */
+    z-index: 3;
 }
 
 .hero-card .hero-attributes .attribute {
@@ -101,38 +98,67 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 32px;
-    padding: 2px;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(218, 165, 32, 0.2);
+    min-width: 56px; /* 47px * 1.2 = 56px */
+    padding: 5px; /* 4px * 1.2 = 5px */
+    border-radius: 6px;
+    background: transparent;
+    border: none;
     transition: all 0.2s ease;
+    position: relative;
+    width: 100%;
+    max-width: 68px; /* 57px * 1.2 = 68px */
+    flex: 1;
 }
 
 .hero-card .hero-attributes .attribute:hover {
-    background: rgba(218, 165, 32, 0.1);
-    border-color: rgba(218, 165, 32, 0.4);
+    transform: scale(1.05);
+}
+
+.attr-icon-container {
+    position: relative;
+    width: 50px; /* 42px * 1.2 = 50px */
+    height: 50px; /* 42px * 1.2 = 50px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px; /* 5px * 1.2 = 6px */
+}
+
+.attr-icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+    transition: all 0.2s ease;
+}
+
+.hero-card .hero-attributes .attribute:hover .attr-icon-image {
+    filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.4));
     transform: scale(1.1);
 }
 
-.hero-card .hero-attributes .attr-icon {
-    font-size: calc(var(--font-size-sm) * 0.9);
-    margin-bottom: 1px;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
-}
-
 .hero-card .hero-attributes .attr-value {
+    position: absolute;
+    bottom: -8px; /* -7px * 1.2 = -8px */
+    left: 50%;
+    transform: translateX(-50%);
     font-family: var(--font-medieval);
-    font-size: calc(var(--font-size-xs) * 1.1);
-    font-weight: 700;
-    color: var(--light-text);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 3px;
-    padding: 1px 4px;
-    min-width: 18px;
+    font-size: calc(var(--font-size-sm) * 1.72); /* 1.43 * 1.2 = 1.72 */
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0 0 4px rgba(0, 0, 0, 0.8);
+    background: none;
+    border: none;
+    border-radius: 0;
+    min-width: auto;
+    height: auto;
+    display: block;
     text-align: center;
-    border: 1px solid rgba(218, 165, 32, 0.3);
 }
 
 /* === EFEITOS ESPECIAIS === */
@@ -176,21 +202,22 @@
     
     .hero-card .hero-attributes {
         padding: calc(var(--spacing-xs) * 0.6);
-        gap: 1px;
+        gap: 0px; /* Removido espaçamento entre atributos */
     }
     
     .hero-card .hero-attributes .attribute {
-        min-width: 28px;
+        min-width: 50px; /* 42px * 1.2 = 50px */
+        max-width: 59px; /* 49px * 1.2 = 59px */
+        padding: 4px; /* 3px * 1.2 = 4px */
     }
     
-    .hero-card .hero-attributes .attr-icon {
-        font-size: calc(var(--font-size-xs) * 0.8);
+    .attr-icon-container {
+        width: 34px; /* 26px * 1.3 = 34px */
+        height: 34px; /* 26px * 1.3 = 34px */
     }
     
     .hero-card .hero-attributes .attr-value {
-        font-size: calc(var(--font-size-xs) * 0.9);
-        padding: 1px 3px;
-        min-width: 16px;
+        font-size: calc(var(--font-size-sm) * 1.24); /* 0.95 * 1.3 = 1.24 */
     }
 }
 
@@ -213,22 +240,22 @@
     
     .hero-card .hero-attributes {
         padding: calc(var(--spacing-xs) * 0.5);
-        gap: 1px;
+        gap: 2px;
     }
     
     .hero-card .hero-attributes .attribute {
-        min-width: 24px;
+        min-width: 36px; /* 28px * 1.3 = 36px */
+        max-width: 42px; /* 32px * 1.3 = 42px */
         padding: 1px;
     }
     
-    .hero-card .hero-attributes .attr-icon {
-        font-size: calc(var(--font-size-xs) * 0.7);
+    .attr-icon-container {
+        width: 29px; /* 22px * 1.3 = 29px */
+        height: 29px; /* 22px * 1.3 = 29px */
     }
     
     .hero-card .hero-attributes .attr-value {
-        font-size: calc(var(--font-size-xs) * 0.8);
-        padding: 0px 2px;
-        min-width: 14px;
+        font-size: calc(var(--font-size-sm) * 1.11); /* 0.85 * 1.3 = 1.11 */
     }
 }
 
@@ -251,3 +278,28 @@
 .hero-card:nth-child(1) { animation-delay: 0.1s; }
 .hero-card:nth-child(2) { animation-delay: 0.2s; }
 .hero-card:nth-child(3) { animation-delay: 0.3s; }
+
+/* === ESTADOS DE CARREGAMENTO DE IMAGEM === */
+.hero-card.image-loaded {
+    /* Imagem carregada com sucesso */
+    opacity: 1;
+}
+
+.hero-card.image-fallback {
+    /* Estilo para quando usa fallback */
+    border-color: rgba(218, 165, 32, 0.5);
+}
+
+.hero-card.image-fallback::after {
+    content: '🏰';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    opacity: 0.3;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* === RESPONSIVIDADE === */

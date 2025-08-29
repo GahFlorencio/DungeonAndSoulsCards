@@ -15,12 +15,16 @@ class HeroManager {
      */
     async loadHeroes() {
         try {
-            const response = await fetch('./configs/cards/heros.json');
+            const response = await fetch('configs/cards/heros.json');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
             const data = await response.json();
             this.allHeroes = data.heros;
-            console.log('Heróis carregados:', this.allHeroes.length);
+            console.log('✅ Heróis carregados:', this.allHeroes.length);
+            console.log('📋 Heróis disponíveis:', this.allHeroes.map(h => `${h.id}: ${h.name}`));
         } catch (error) {
-            console.error('Erro ao carregar heróis:', error);
+            console.error('❌ Erro ao carregar heróis:', error);
             // Fallback com dados básicos caso o arquivo não carregue
             this.allHeroes = [
                 { id: 1, name: "Goliath Bárbaro", str: 10, dex: 4, int: 3, con: 8, def: 5 },
@@ -59,7 +63,9 @@ class HeroManager {
      */
     getHeroImagePath(heroId) {
         const variation = this.heroVariations.get(heroId) || 1;
-        return `./assets/images/cards/webp/hero_${heroId}_${variation}.webp`;
+        const imagePath = `assets/images/cards/webp/hero_${heroId}_${variation}.webp`;
+        console.log(`🖼️ Caminho da imagem para herói ${heroId}:`, imagePath);
+        return imagePath;
     }
 
     /**

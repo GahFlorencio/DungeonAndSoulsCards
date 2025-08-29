@@ -16,6 +16,9 @@ class GameInitializer {
         try {
             console.log('🎮 Inicializando Dungeons & Souls Cards...');
 
+            // 0. Testa carregamento de imagens
+            this.testImageLoading();
+
             // 1. Carrega os dados dos heróis
             await window.heroManager.loadHeroes();
 
@@ -120,6 +123,49 @@ class GameInitializer {
         
         console.log('✅ Jogo reiniciado!');
     }
+
+    /**
+     * Testa o carregamento de uma imagem específica
+     */
+    testImageLoading() {
+        console.log('🧪 Testando carregamento de imagens...');
+        
+        // Testa carregamento de uma imagem de herói
+        const testHeroImage = new Image();
+        testHeroImage.onload = function() {
+            console.log('✅ Imagem de teste carregada com sucesso:', this.src);
+            console.log('📐 Dimensões:', this.naturalWidth + 'x' + this.naturalHeight);
+        };
+        testHeroImage.onerror = function() {
+            console.log('❌ Falha ao carregar imagem de teste:', this.src);
+        };
+        testHeroImage.src = 'assets/images/cards/webp/hero_1_1.webp';
+        
+        // Testa carregamento de um ícone
+        const testIcon = new Image();
+        testIcon.onload = function() {
+            console.log('✅ Ícone de teste carregado com sucesso:', this.src);
+            console.log('📐 Dimensões:', this.naturalWidth + 'x' + this.naturalHeight);
+        };
+        testIcon.onerror = function() {
+            console.log('❌ Falha ao carregar ícone de teste:', this.src);
+        };
+        testIcon.src = 'assets/images/cards/webp/attribute_str_icon.webp';
+        
+        console.log('🔄 Testes de imagem iniciados...');
+        
+        // Testa também com URL absoluta
+        setTimeout(() => {
+            const absoluteTest = new Image();
+            absoluteTest.onload = function() {
+                console.log('✅ Teste URL absoluta funcionou:', this.src);
+            };
+            absoluteTest.onerror = function() {
+                console.log('❌ Teste URL absoluta falhou:', this.src);
+            };
+            absoluteTest.src = window.location.origin + '/assets/images/cards/webp/hero_1_1.webp';
+        }, 1000);
+    }
 }
 
 // Instância global do inicializador
@@ -129,6 +175,13 @@ window.gameInitializer = new GameInitializer();
 document.addEventListener('DOMContentLoaded', () => {
     window.gameInitializer.initializeGame();
 });
+
+// Função global para recarregar cartas e testar (pode ser chamada do console)
+window.testHeroCards = () => {
+    console.log('🔄 Testando cartas de herói...');
+    window.gameInitializer.testImageLoading();
+    window.heroCardRenderer.updateHeroCardsInDOM();
+};
 
 // Função global para reiniciar o jogo (pode ser chamada do console para testes)
 window.restartGame = () => window.gameInitializer.restartGame();
