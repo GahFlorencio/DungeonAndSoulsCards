@@ -13,6 +13,7 @@
 @import 'game-ui.css';
 @import 'game-board.css';
 @import 'hero-cards.css';
+@import 'equipment-cards.css';
 
 /* 
   Ordem de importação:

@@ -22,14 +22,24 @@ class GameInitializer {
             // 1. Carrega os dados dos heróis
             await window.heroManager.loadHeroes();
 
-            // 2. Randomiza os heróis para a partida
+            // 2. Carrega os dados dos equipamentos
+            await window.equipmentManager.loadEquipments();
+
+            // 3. Randomiza os heróis para a partida
             const selectedHeroes = window.heroManager.randomizeHeroesForGame();
             console.log('⚔️ Heróis selecionados:', selectedHeroes.map(h => h.name));
 
-            // 3. Renderiza as cartas de heróis na interface
+            // 4. Randomiza os equipamentos para a partida
+            const selectedEquipments = window.equipmentManager.randomizeEquipmentsForGame(2);
+            console.log('🛡️ Equipamentos selecionados:', selectedEquipments.map(e => e.name));
+
+            // 5. Renderiza as cartas de heróis na interface
             window.heroCardRenderer.updateHeroCardsInDOM();
 
-            // 4. Adiciona event listeners para interações
+            // 6. Renderiza as cartas de equipamentos na interface
+            window.equipmentCardRenderer.updateEquipmentCardsInDOM();
+
+            // 7. Adiciona event listeners para interações
             this.addEventListeners();
 
             this.isInitialized = true;
@@ -50,6 +60,12 @@ class GameInitializer {
             if (heroCard) {
                 this.handleHeroCardClick(heroCard);
             }
+            
+            // Event listener para cliques nas cartas de equipamentos
+            const equipmentCard = event.target.closest('.equipment-card');
+            if (equipmentCard) {
+                this.handleEquipmentCardClick(equipmentCard);
+            }
         });
 
         // Event listener para hover nas cartas
@@ -57,6 +73,11 @@ class GameInitializer {
             const heroCard = event.target.closest('.hero-card');
             if (heroCard) {
                 this.handleHeroCardHover(heroCard);
+            }
+            
+            const equipmentCard = event.target.closest('.equipment-card');
+            if (equipmentCard) {
+                this.handleEquipmentCardHover(equipmentCard);
             }
         });
 
@@ -118,8 +139,13 @@ class GameInitializer {
         const selectedHeroes = window.heroManager.randomizeHeroesForGame();
         console.log('⚔️ Novos heróis selecionados:', selectedHeroes.map(h => h.name));
         
+        // Randomiza novos equipamentos
+        const selectedEquipments = window.equipmentManager.randomizeEquipmentsForGame(2);
+        console.log('🛡️ Novos equipamentos selecionados:', selectedEquipments.map(e => e.name));
+        
         // Atualiza a interface
         window.heroCardRenderer.updateHeroCardsInDOM();
+        window.equipmentCardRenderer.updateEquipmentCardsInDOM();
         
         console.log('✅ Jogo reiniciado!');
     }
@@ -165,6 +191,53 @@ class GameInitializer {
             };
             absoluteTest.src = window.location.origin + '/assets/images/cards/webp/hero_1_1.webp';
         }, 1000);
+    }
+
+    /**
+     * Manipula cliques nas cartas de equipamentos
+     */
+    handleEquipmentCardClick(equipmentCard) {
+        const equipmentId = parseInt(equipmentCard.dataset.equipmentId);
+        const equipment = window.equipmentManager.getEquipmentById(equipmentId);
+        
+        console.log('🛡️ Equipamento clicado:', equipment.name);
+        
+        // Adiciona feedback visual
+        equipmentCard.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            equipmentCard.style.transform = '';
+        }, 150);
+
+        // Aqui você pode adicionar lógica para usar o equipamento
+        this.useEquipment(equipment);
+    }
+
+    /**
+     * Manipula hover nas cartas de equipamentos
+     */
+    handleEquipmentCardHover(equipmentCard) {
+        const equipmentId = parseInt(equipmentCard.dataset.equipmentId);
+        const equipment = window.equipmentManager.getEquipmentById(equipmentId);
+        
+        // Atualiza informações de hover (pode ser expandido futuramente)
+        console.log('👁️ Visualizando equipamento:', equipment.name);
+    }
+
+    /**
+     * Lógica para usar um equipamento
+     */
+    useEquipment(equipment) {
+        const mainAttribute = window.equipmentManager.getEquipmentMainAttribute(equipment);
+        
+        console.log(`⚔️ Usando equipamento: ${equipment.name}`);
+        console.log(`📈 Buff: +${mainAttribute.value} ${mainAttribute.name}`);
+        console.log(`📜 Descrição: ${equipment.description}`);
+        
+        // Aqui você pode adicionar:
+        // - Lógica de aplicar o buff
+        // - Animações de equipamento sendo usado
+        // - Atualizações nos atributos do herói
+        // - Logs de partida
     }
 }
 
